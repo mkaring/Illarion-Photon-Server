@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Illarion.Net.Common;
 using Illarion.Net.Common.Operations.Account;
 using Photon.SocketServer;
@@ -12,6 +9,7 @@ namespace Illarion.Server.Photon.Rpc
 {
   public sealed class LoginCharacterOperationTest
   {
+    [Trait("Category", "Networking")]
     [Theory]
     [MemberData(nameof(DecodeOperationRequestTestData))]
     public static void DecodeOperationRequestTest(Guid characterId, bool isValid)

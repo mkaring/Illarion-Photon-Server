@@ -12,6 +12,7 @@ namespace Illarion.Server.Photon
 {
   public sealed class InitialOperationHandlerTest
   {
+    [Trait("Category", "Networking")]
     [Theory]
     [InlineData("de"), InlineData("de-DE"), InlineData("en"), InlineData("en-US"), InlineData("en-GB")]
     public static void ConnectedSetCultureTest(string cultureName)

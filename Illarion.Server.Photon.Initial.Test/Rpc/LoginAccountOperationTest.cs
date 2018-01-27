@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Illarion.Net.Common;
@@ -10,6 +9,7 @@ namespace Illarion.Server.Photon.Rpc
 {
   public sealed class LoginAccountOperationTest
   {
+    [Trait("Category", "Networking")]
     [Theory]
     [MemberData(nameof(DecodeOperationRequestTestData))]
     public static void DecodeOperationRequestTest(string accountName, string password, bool isValid, bool annotationIsValid)

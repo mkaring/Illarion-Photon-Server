@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
@@ -11,6 +10,7 @@ namespace Illarion.Server.Photon.Rpc
 {
   public sealed class SetCultureOperationTest
   {
+    [Trait("Category", "Networking")]
     [Theory]
     [MemberData(nameof(DecodeOperationRequestTestData))]
     public static void DecodeOperationRequestTest(string cultureName, int lcid, bool isValid, bool annotationIsValid)
