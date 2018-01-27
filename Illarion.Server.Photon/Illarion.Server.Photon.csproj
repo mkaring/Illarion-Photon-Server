@@ -13,8 +13,20 @@
 	<ReferencePath>$(PHOTON_SERVER_SDK)\lib</ReferencePath>
   </PropertyGroup>
   
+  <PropertyGroup Condition="'$(Platform)' == 'AnyCPU'">
+	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	<OutputPath>bin\$(Configuration)\$(TargetFramework)\bin\</OutputPath>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Platform)' != 'AnyCPU'">
+	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	<OutputPath>bin\$(Configuration)\$(Platform)\$(TargetFramework)\bin\</OutputPath>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="2.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="2.0.0" />
   </ItemGroup>
   
@@ -27,6 +39,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="ExitGamesLibs">
+	  <HintPath>$(PHOTON_SERVER_SDK)\lib\ExitGamesLibs.dll</HintPath>
+	  <Private>true</Private>
+	</Reference>
     <Reference Include="Photon.SocketServer">
 	  <HintPath>$(PHOTON_SERVER_SDK)\lib\Photon.SocketServer.dll</HintPath>
 	  <Private>true</Private>
@@ -50,6 +66,15 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Illarion-Development.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="socket-policy.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.EventLog;
@@ -11,22 +12,38 @@ namespace Illarion.Server.Photon
 
     protected override PeerBase CreatePeer(InitRequest initRequest) => new PlayerPeer(initRequest, _services);
 
-    public ServerApplication() : base()
-    {
-    }
-
     protected override void Setup()
     {
       var services = new ServiceCollection();
-      services.AddLogging(builder => builder.AddEventLog(new EventLogSettings() { SourceName = "Illarion Server"}));
+      services.AddLogging(builder =>
+        {
+          builder.AddEventLog(new EventLogSettings() { SourceName = "Application", LogName="Illarion Server", Filter = (m, l) => l >= LogLevel.Error });
+          builder.AddConsole();
+#if DEBUG
+          builder.AddDebug();
+#endif
+        });
       services.AddIllarionPersistanceContext();
 
       services.AddTransient<IInitialOperationHandler>(s => new InitialOperationHandler(s));
       services.AddTransient<IAccountOperationHandler>(s => new AccountOperationHandler(s));
 
       _services = services.BuildServiceProvider();
+
+      SetupPhotonLogging(_services);
     }
 
-    protected override void TearDown() => _services.Dispose();
+    protected override void TearDown() => _services?.Dispose();
+
+    private static void SetupPhotonLogging(IServiceProvider services) =>
+      ExitGames.Logging.LogManager.SetLoggerFactory(new Logging.ExitGamesLoggerFactory(services));
+
+    private void AppDomain_OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+      var exception = e.ExceptionObject as Exception;
+      LogLevel level = e.IsTerminating ? LogLevel.Critical : LogLevel.Error;
+
+      _services.GetRequiredService<ILogger>().Log(level, 0, e.ExceptionObject.ToString(), exception, (m, ex) => m);;
+    }
   }
 }

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "Illarion.Server.Photon": {
+      "commandName": "Executable",
+      "executablePath": "$(PHOTON_SERVER_SDK)\\deploy\\bin_Win64\\PhotonSocketServer.exe",
+      "commandLineArgs": "/debug Illarion /config Illarion-Development.config",
+      "workingDirectory": "$(OutputPath)"
+    }
+  }
+}
