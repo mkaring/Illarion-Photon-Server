@@ -13,7 +13,7 @@ namespace Illarion.Server.Photon.Rpc
     }
 
     [DataMember(Name = nameof(CultureName), Code = (byte)SetCultureOperationParameterCode.CultureName)]
-    [Required]
+    [Required, MinLength(1)]
     public string CultureName { get; set; }
 
     internal CultureInfo Culture
@@ -22,7 +22,19 @@ namespace Illarion.Server.Photon.Rpc
       {
         if (string.IsNullOrWhiteSpace(CultureName))
           return CultureInfo.InvariantCulture;
-        return CultureInfo.GetCultureInfo(CultureName) ?? CultureInfo.InvariantCulture;
+
+        try
+        {
+          var foundCulture = CultureInfo.GetCultureInfo(CultureName);
+          if (foundCulture == null || foundCulture.UseUserOverride)
+            return CultureInfo.InvariantCulture;
+
+          return foundCulture;
+        }
+        catch
+        {
+          return CultureInfo.InvariantCulture;
+        }
       }
     }
   }

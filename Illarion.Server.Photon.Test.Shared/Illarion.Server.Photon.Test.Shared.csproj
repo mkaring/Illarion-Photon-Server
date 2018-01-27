@@ -1,0 +1,70 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net47</TargetFramework>
+    <OptionStrict>On</OptionStrict>
+    <NeutralLanguage>en</NeutralLanguage>
+    <SignAssembly>true</SignAssembly>
+    <DelaySign>false</DelaySign>
+    <AssemblyOriginatorKeyFile>../IllarionDevelopment.snk</AssemblyOriginatorKeyFile>
+    <RootNamespace>Illarion.Server.Photon</RootNamespace>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(PHOTON_SERVER_SDK)' != ''">
+	<ReferencePath>$(PHOTON_SERVER_SDK)\lib</ReferencePath>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Platform)' == 'AnyCPU'">
+	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	<OutputPath>bin\$(Configuration)\$(TargetFramework)\bin\</OutputPath>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Platform)' != 'AnyCPU'">
+	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	<OutputPath>bin\$(Configuration)\$(Platform)\$(TargetFramework)\bin\</OutputPath>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ExitGamesLibs">
+	  <HintPath>$(PHOTON_SERVER_SDK)\lib\ExitGamesLibs.dll</HintPath>
+	  <Private>true</Private>
+	</Reference>
+    <Reference Include="Photon.SocketServer">
+	  <HintPath>$(PHOTON_SERVER_SDK)\lib\Photon.SocketServer.dll</HintPath>
+	  <Private>true</Private>
+	</Reference>
+    <Reference Include="PhotonHostRuntimeInterfaces">
+	  <HintPath>$(PHOTON_SERVER_SDK)\lib\PhotonHostRuntimeInterfaces.dll</HintPath>
+	  <Private>true</Private>
+	</Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Illarion-Development.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="socket-policy.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

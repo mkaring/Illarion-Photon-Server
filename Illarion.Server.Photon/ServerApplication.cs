@@ -8,13 +8,21 @@ namespace Illarion.Server.Photon
 {
   public class ServerApplication : ApplicationBase
   {
-    private ServiceProvider _services;
+    private IServiceProvider _services;
+    private IServiceProviderFactory<IServiceCollection> _serviceProviderFactory;
+
+    public ServerApplication() : this(new DefaultServiceProviderFactory())
+    {
+    }
+
+    public ServerApplication(IServiceProviderFactory<IServiceCollection> serviceProviderFactory) =>
+      _serviceProviderFactory = serviceProviderFactory ?? throw new ArgumentNullException(nameof(serviceProviderFactory));
 
     protected override PeerBase CreatePeer(InitRequest initRequest) => new PlayerPeer(initRequest, _services);
 
     protected override void Setup()
     {
-      var services = new ServiceCollection();
+      IServiceCollection services = _serviceProviderFactory.CreateBuilder(new ServiceCollection());
       services.AddLogging(builder =>
         {
           builder.AddEventLog(new EventLogSettings() { SourceName = "Application", LogName="Illarion Server", Filter = (m, l) => l >= LogLevel.Error });
@@ -28,12 +36,12 @@ namespace Illarion.Server.Photon
       services.AddTransient<IInitialOperationHandler>(s => new InitialOperationHandler(s));
       services.AddTransient<IAccountOperationHandler>(s => new AccountOperationHandler(s));
 
-      _services = services.BuildServiceProvider();
+      _services = _serviceProviderFactory.CreateServiceProvider(services);
 
       SetupPhotonLogging(_services);
     }
 
-    protected override void TearDown() => _services?.Dispose();
+    protected override void TearDown() => (_services as IDisposable)?.Dispose();
 
     private static void SetupPhotonLogging(IServiceProvider services) =>
       ExitGames.Logging.LogManager.SetLoggerFactory(new Logging.ExitGamesLoggerFactory(services));

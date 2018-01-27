@@ -8,22 +8,22 @@ namespace Illarion.Server.Photon.Rpc
 {
   internal sealed class RegisterNewAccountOperation : Operation
   {
-    public RegisterNewAccountOperation(IRpcProtocol protocol, OperationRequest request) : base(protocol, request)
+    internal RegisterNewAccountOperation(IRpcProtocol protocol, OperationRequest request) : base(protocol, request)
     {
     }
 
     [DataMember(Name = nameof(AccountName), Code = (byte)RegisterNewAccountOperationParameterCode.AccountName)]
-    [Required]
+    [Required, StringLength(16, MinimumLength = 4)]
     public string AccountName { get; set; }
 
     [DataMember(Name = nameof(EMail), Code = (byte)RegisterNewAccountOperationParameterCode.EMail)]
     [EmailAddress, Required]
     public string RawEMail { get; set; }
 
-    public MailAddress EMail => new MailAddress(RawEMail);
+    internal MailAddress EMail => new MailAddress(RawEMail);
 
     [DataMember(Name = nameof(Password), Code = (byte)RegisterNewAccountOperationParameterCode.Password)]
-    [Required]
+    [Required, StringLength(40, MinimumLength = 8)]
     public string Password { get; set; }
   }
 }

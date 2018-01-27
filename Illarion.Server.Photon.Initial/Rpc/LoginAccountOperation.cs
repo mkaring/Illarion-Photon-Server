@@ -12,11 +12,11 @@ namespace Illarion.Server.Photon.Rpc
     }
 
     [DataMember(Name = nameof(AccountName), Code = (byte)LoginAccountOperationParameterCode.AccountName)]
-    [Required]
+    [Required, MinLength(1)]
     public string AccountName { get; set; }
 
     [DataMember(Name = nameof(Password), Code = (byte)LoginAccountOperationParameterCode.Password)]
-    [Required]
+    [Required, MinLength(1)]
     public string Password { get; set; }
   }
 }
