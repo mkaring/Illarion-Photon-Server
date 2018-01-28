@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Illarion.Net.Common;
 using Illarion.Net.Common.Operations.Account;
+using Illarion.Server.Persistence;
 using Illarion.Server.Persistence.Server;
 using Illarion.Server.Photon.Rpc;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +14,8 @@ namespace Illarion.Server.Photon
   {
     private readonly IServiceProvider _services;
 
-    public AccountOperationHandler(IServiceProvider services) => _services = services ?? throw new ArgumentNullException(nameof(services));
+    public AccountOperationHandler(IServiceProvider services) : base(services) =>
+      _services = services ?? throw new ArgumentNullException(nameof(services));
 
     protected override void OnDisconnect(PlayerPeerBase peer)
     {
@@ -42,7 +44,7 @@ namespace Illarion.Server.Photon
       var operation = new LoginCharacterOperation(peer.Protocol, operationRequest);
       if (operation.IsValid)
       {
-        Character matchingCharacter = _services.GetRequiredService<ServerContext>().Characters.
+        Character matchingCharacter = _services.GetRequiredService<IllarionContext>().Characters.
           Where(c => c.AccountId == peer.Account.AccountId && c.CharacterId == operation.CharacterId).
           FirstOrDefault();
         if (matchingCharacter != null)

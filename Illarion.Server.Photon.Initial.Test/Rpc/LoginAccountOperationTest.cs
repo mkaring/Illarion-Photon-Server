@@ -20,7 +20,7 @@ namespace Illarion.Server.Photon.Rpc
       };
 
       var operationRequest = new OperationRequest((byte)InitialOperationCode.LoginAccount, data);
-      var operation = new LoginAccountOperation(new TestRpcProtocol(), operationRequest);
+      var operation = new LoginAccountOperation(Protocol.GpBinaryV17, request: operationRequest);
 
       Assert.NotNull(operation.OperationRequest);
       Assert.Equal((byte)InitialOperationCode.LoginAccount, operation.OperationRequest.OperationCode);

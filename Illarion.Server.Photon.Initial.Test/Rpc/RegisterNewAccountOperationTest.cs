@@ -21,7 +21,7 @@ namespace Illarion.Server.Photon.Rpc
       };
 
       var operationRequest = new OperationRequest((byte)InitialOperationCode.RegisterNewAccount, data);
-      var operation = new RegisterNewAccountOperation(new TestRpcProtocol(), operationRequest);
+      var operation = new RegisterNewAccountOperation(Protocol.GpBinaryV17, operationRequest);
 
       Assert.NotNull(operation.OperationRequest);
       Assert.Equal((byte)InitialOperationCode.RegisterNewAccount, operation.OperationRequest.OperationCode);

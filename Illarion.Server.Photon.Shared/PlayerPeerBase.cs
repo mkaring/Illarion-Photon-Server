@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using Illarion.Server.Persistence.Accounts;
 using Illarion.Server.Persistence.Server;
 using Photon.SocketServer;

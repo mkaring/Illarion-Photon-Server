@@ -5,16 +5,25 @@ using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 namespace Illarion.Server.Persistence.Server
 {
-  public class ServerContext : DbContext
+  //public class ServerContext : DbContext
+  //{
+  //  public ServerContext(DbContextOptions<ServerContext> options) : base(options)
+  //  {
+  //  }
+
+  //  public DbSet<Character> Characters { get; set; }
+  //  public DbSet<CharacterAttribute> CharacterAttributes { get; set; }
+
+  //  protected override void OnModelCreating(ModelBuilder modelBuilder)
+  //  {
+  //    CreateModel(modelBuilder);
+  //    base.OnModelCreating(modelBuilder);
+  //  }
+  //}
+
+  public static class ServerContext
   {
-    public ServerContext(DbContextOptions<ServerContext> options) : base(options)
-    {
-    }
-
-    public DbSet<Character> Characters { get; set; }
-    public DbSet<CharacterAttribute> CharacterAttributes { get; set; }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public static void CreateModel(ModelBuilder modelBuilder)
     {
       if (modelBuilder == null) throw new ArgumentNullException(nameof(modelBuilder));
 
@@ -59,8 +68,5 @@ namespace Illarion.Server.Persistence.Server
         characterAttributeEntity.Property(ca => ca.Value).IsRequired();
       }
     }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
-      ServerContextFactory.BuildServerContext(optionsBuilder);
   }
 }

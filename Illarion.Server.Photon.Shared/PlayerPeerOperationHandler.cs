@@ -1,15 +1,18 @@
+using System;
 using Illarion.Net.Common.Operations;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Photon.SocketServer;
 using Photon.SocketServer.Rpc;
-using System;
 
 namespace Illarion.Server.Photon
 {
   public abstract class PlayerPeerOperationHandler : IOperationHandler
   {
-    protected PlayerPeerOperationHandler()
-    {
-    }
+    private readonly ILogger _logger;
+
+    protected PlayerPeerOperationHandler(IServiceProvider serviceProvider) =>
+      _logger = serviceProvider.GetService<ILogger>();
 
     public virtual void OnDisconnect(PeerBase peer)
     {
@@ -28,7 +31,15 @@ namespace Illarion.Server.Photon
       var connectedUser = peer as PlayerPeerBase;
       if (connectedUser == null) throw new ArgumentException("Unexpected type of peer.", nameof(peer));
 
-      return OnOperationRequest(connectedUser, operationRequest, sendParameters);
+      try
+      {
+        return OnOperationRequest(connectedUser, operationRequest, sendParameters);
+      }
+      catch (Exception ex)
+      {
+        _logger.LogError(ex, "Error while processing operation request.");
+        return InternalErrorResponse(operationRequest, ex);
+      }
     }
 
     protected abstract void OnDisconnect(PlayerPeerBase peer);
@@ -39,6 +50,13 @@ namespace Illarion.Server.Photon
       {
         ReturnCode = (int)ReturnCode.InvalidOperation,
         DebugMessage = "InvalidOperation: " + operationRequest.OperationCode
+      };
+
+    protected static OperationResponse InternalErrorResponse(OperationRequest operationRequest, Exception exception) =>
+      new OperationResponse(operationRequest.OperationCode)
+      {
+        ReturnCode = (int)ReturnCode.InternalServerError,
+        DebugMessage = exception.Message
       };
   }
 }

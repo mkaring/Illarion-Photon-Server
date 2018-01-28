@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Mail;
 using Illarion.Net.Common;
 using Illarion.Net.Common.Operations.Initial;
+using Illarion.Server.Persistence;
 using Illarion.Server.Persistence.Accounts;
 using Illarion.Server.Photon.Rpc;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,7 @@ namespace Illarion.Server.Photon
   {
     private readonly IServiceProvider _services;
 
-    public InitialOperationHandler(IServiceProvider services) => _services = services ?? throw new ArgumentNullException(nameof(services));
+    public InitialOperationHandler(IServiceProvider services) : base(services) => _services = services ?? throw new ArgumentNullException(nameof(services));
 
     protected override void OnDisconnect(PlayerPeerBase peer)
     {
@@ -62,7 +63,7 @@ namespace Illarion.Server.Photon
       var operation = new LoginAccountOperation(peer.Protocol, operationRequest);
       if (operation.IsValid)
       {
-        Account matchingAccount = _services.GetRequiredService<AccountsContext>().Accounts.
+        Account matchingAccount = _services.GetRequiredService<IllarionContext>().Accounts.
           Where(a => a.AccountName.Equals(operation.AccountName, StringComparison.Ordinal)).
           FirstOrDefault();
 
@@ -91,7 +92,7 @@ namespace Illarion.Server.Photon
       var operation = new RegisterNewAccountOperation(peer.Protocol, operationRequest);
       if (operation.IsValid && Validator.TryValidateObject(operation, new ValidationContext(operation), null))
       {
-        DbSet<Account> accounts = _services.GetRequiredService<AccountsContext>().Accounts;
+        DbSet<Account> accounts = _services.GetRequiredService<IllarionContext>().Accounts;
         Account matchingAccountName = accounts.Where(a => a.AccountName.Equals(operation.AccountName, StringComparison.Ordinal)).FirstOrDefault();
 
         if (matchingAccountName != null)

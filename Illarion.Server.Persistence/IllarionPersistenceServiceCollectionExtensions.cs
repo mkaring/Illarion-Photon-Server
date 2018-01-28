@@ -1,5 +1,4 @@
-using Illarion.Server.Persistence.Accounts;
-using Illarion.Server.Persistence.Server;
+using Illarion.Server.Persistence;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -7,9 +6,7 @@ namespace Microsoft.Extensions.DependencyInjection
   {
     public static IServiceCollection AddIllarionPersistanceContext(this IServiceCollection serviceCollection)
     {
-      serviceCollection.AddEntityFrameworkSqlite();
-      serviceCollection.AddDbContextPool<AccountsContext>(AccountsContextFactory.BuildAccountContext);
-      serviceCollection.AddDbContextPool<ServerContext>(ServerContextFactory.BuildServerContext);
+      serviceCollection.AddDbContextPool<IllarionContext>(IllarionContextFactory.BuildAccountContext);
       return serviceCollection;
     }
   }

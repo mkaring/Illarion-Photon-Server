@@ -20,7 +20,7 @@ namespace Illarion.Server.Photon.Rpc
       };
 
       var operationRequest = new OperationRequest((byte)InitialOperationCode.SetCulture, data);
-      var operation = new SetCultureOperation(new TestRpcProtocol(), operationRequest);
+      var operation = new SetCultureOperation(Protocol.GpBinaryV17, operationRequest);
 
       Assert.NotNull(operation.OperationRequest);
       Assert.Equal((byte)InitialOperationCode.SetCulture, operation.OperationRequest.OperationCode);
