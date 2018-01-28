@@ -92,7 +92,8 @@ namespace Illarion.Server.Photon
       var operation = new RegisterNewAccountOperation(peer.Protocol, operationRequest);
       if (operation.IsValid && Validator.TryValidateObject(operation, new ValidationContext(operation), null))
       {
-        DbSet<Account> accounts = _services.GetRequiredService<IAccountsContext>().Accounts;
+        IAccountsContext accountsContext = _services.GetRequiredService<IAccountsContext>();
+        DbSet<Account> accounts = accountsContext.Accounts;
         Account matchingAccountName = accounts.Where(a => a.AccountName.Equals(operation.AccountName, StringComparison.Ordinal)).FirstOrDefault();
 
         if (matchingAccountName != null)
@@ -108,7 +109,7 @@ namespace Illarion.Server.Photon
         }
 
         accounts.Add(new Account(operation.AccountName) { EMail = operation.EMail.ToString(), Password = operation.Password });
-
+        accountsContext.SaveChanges();
         return new OperationResponse(operationRequest.OperationCode) { ReturnCode = (byte)RegisterNewAccountOperationReturnCode.Success };
       }
       else
