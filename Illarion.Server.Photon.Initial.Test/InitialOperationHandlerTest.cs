@@ -59,11 +59,13 @@ namespace Illarion.Server.Photon
     [Fact]
     public static void ConnectedLoginAccountTest()
     {
+      var accountOperationHandler = new TestAccountOperationHandler();
+
       IServiceProvider serviceProvider = new ServiceCollection().
         AddIllarionTestPersistanceContext().
-        AddSingleton<IAccountOperationHandler>(new TestAccountOperationHandler()).
+        AddSingleton<IAccountOperationHandler>(accountOperationHandler).
         BuildServiceProvider();
-      
+
       {
         IAccountsContext ctx = serviceProvider.GetRequiredService<IAccountsContext>();
         ctx.Accounts.Add(
@@ -75,45 +77,44 @@ namespace Illarion.Server.Photon
         ctx.SaveChanges();
       }
 
-      using (var hoster = new PhotonApplicationHoster())
+      var operationHandler = new InitialOperationHandler(serviceProvider);
+      var application = new TestApplication(operationHandler);
+      var applicationProxy = new PhotonApplicationProxy(application);
+      applicationProxy.Start();
+
+      try
       {
-        var operationHandler = new InitialOperationHandler(serviceProvider);
-        var application = new TestApplication(operationHandler);
-        var applicationProxy = new PhotonApplicationProxy(application);
-        applicationProxy.Start();
+        var testClient = new UnitTestClient();
+        testClient.Connect(applicationProxy);
 
-        try
-        {
-          hoster.AddListenerToApplication(applicationProxy, "0.0.0.0", 12345);
-          UnitTestClient testClient = hoster.CreateClient("0.0.0.0", 12345, application.SdkVersion, 42);
+        Assert.True(testClient.Connected);
+        Assert.Equal(1, applicationProxy.ClientCount);
+        Assert.NotNull(application.LastCreatedPeer);
 
-          Assert.Equal(SendResult.Ok, testClient.InitializeEncyption(10000));
+        Assert.Equal(SendResult.Ok, testClient.InitializeEncyption(10000));
 
-          Assert.True(testClient.Connected);
-          Assert.Equal(1, applicationProxy.ClientCount);
-          Assert.NotNull(application.LastCreatedPeer);
-
-          SendResult result = testClient.SendOperationRequest(
-            new OperationRequest(
-              (byte)InitialOperationCode.LoginAccount,
-              new Dictionary<byte, object>() {
+        SendResult result = testClient.SendOperationRequest(
+          new OperationRequest(
+            (byte)InitialOperationCode.LoginAccount,
+            new Dictionary<byte, object>() {
               { (byte) LoginAccountOperationParameterCode.AccountName, "TestAccount" },
               { (byte) LoginAccountOperationParameterCode.Password, "test1234" },
-              }), encrypted: true);
-          Assert.Equal(SendResult.Ok, result);
+            }), encrypted: true);
+        Assert.Equal(SendResult.Ok, result);
 
-          OperationResponse response = testClient.WaitForOperationResponse(10000);
-          Assert.NotNull(response);
-          Assert.Equal((byte)InitialOperationCode.LoginAccount, response.OperationCode);
-          Assert.Equal((int)LoginAccountOperationReturnCode.Success, response.ReturnCode);
+        OperationResponse response = testClient.WaitForOperationResponse(10000);
+        Assert.NotNull(response);
+        Assert.Equal((byte)InitialOperationCode.LoginAccount, response.OperationCode);
+        Assert.Equal((int)LoginAccountOperationReturnCode.Success, response.ReturnCode);
 
-          Assert.NotNull(application.LastCreatedPeer.Account);
-          Assert.Equal("TestAccount", application.LastCreatedPeer.Account.AccountName);
-        }
-        finally
-        {
-          applicationProxy.Stop();
-        }
+        Assert.NotNull(application.LastCreatedPeer.Account);
+        Assert.Equal("TestAccount", application.LastCreatedPeer.Account.AccountName);
+
+        Assert.Same(accountOperationHandler, application.LastCreatedPeer.CurrentOperationHandler);
+      }
+      finally
+      {
+        applicationProxy.Stop();
       }
     }
 
