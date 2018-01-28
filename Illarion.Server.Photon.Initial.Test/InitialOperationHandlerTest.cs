@@ -65,7 +65,7 @@ namespace Illarion.Server.Photon
         BuildServiceProvider();
       
       {
-        IllarionContext ctx = serviceProvider.GetRequiredService<IllarionContext>();
+        IAccountsContext ctx = serviceProvider.GetRequiredService<IAccountsContext>();
         ctx.Accounts.Add(
           new Account("TestAccount")
           {

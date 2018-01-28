@@ -21,7 +21,8 @@
   
   <ItemGroup>
     <ProjectReference Include="..\Illarion.Net.Common\Illarion.Net.Common.csproj" />
-    <ProjectReference Include="..\Illarion.Server.Persistence\Illarion.Server.Persistence.csproj" />
+    <ProjectReference Include="..\Illarion.Server.Persistence.Accounts\Illarion.Server.Persistence.Accounts.csproj" />
+    <ProjectReference Include="..\Illarion.Server.Persistence.Server\Illarion.Server.Persistence.Server.csproj" />
     <ProjectReference Include="..\Illarion.Server.Photon.Shared\Illarion.Server.Photon.Shared.csproj" />
   </ItemGroup>
 

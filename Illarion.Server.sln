@@ -36,6 +36,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Illarion.Server.Photon.Acco
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Illarion.Server.Persistence.Test.Shared", "Illarion.Server.Persistence.Test.Shared\Illarion.Server.Persistence.Test.Shared.csproj", "{A5106B48-F88D-4A1B-8AF0-33971AC1C625}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Illarion.Server.Persistence.Shared", "Illarion.Server.Persistence.Shared\Illarion.Server.Persistence.Shared.csproj", "{D544C77B-DD93-4091-ABEE-D89A207FDE43}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +92,10 @@ Global
 		{A5106B48-F88D-4A1B-8AF0-33971AC1C625}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A5106B48-F88D-4A1B-8AF0-33971AC1C625}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A5106B48-F88D-4A1B-8AF0-33971AC1C625}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D544C77B-DD93-4091-ABEE-D89A207FDE43}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D544C77B-DD93-4091-ABEE-D89A207FDE43}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D544C77B-DD93-4091-ABEE-D89A207FDE43}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D544C77B-DD93-4091-ABEE-D89A207FDE43}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -102,6 +108,7 @@ Global
 		{3B007151-32A6-411B-AD2B-8156002D97A4} = {9FD82553-F498-4CC0-B89E-FEB09842FBD8}
 		{479EA209-847A-4612-B102-FBE8713EE20C} = {9FD82553-F498-4CC0-B89E-FEB09842FBD8}
 		{A5106B48-F88D-4A1B-8AF0-33971AC1C625} = {9FD82553-F498-4CC0-B89E-FEB09842FBD8}
+		{D544C77B-DD93-4091-ABEE-D89A207FDE43} = {C96CEF0B-E2E8-42E7-BE5B-1D6045A72343}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1D5C15E9-844D-400A-BC82-6F16C76FB6C8}

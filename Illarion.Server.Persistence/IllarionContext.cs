@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Illarion.Server.Persistence
 {
-  public class IllarionContext : DbContext
+  internal sealed class IllarionContext : DbContext, IAccountsContext, IServerContext
   {
     public IllarionContext(DbContextOptions options) : base(options)
     {
@@ -21,8 +21,6 @@ namespace Illarion.Server.Persistence
 
       base.OnModelCreating(modelBuilder);
     }
-
-
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
       IllarionContextFactory.BuildAccountContext(optionsBuilder);

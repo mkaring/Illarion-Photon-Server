@@ -44,7 +44,7 @@ namespace Illarion.Server.Photon
       var operation = new LoginCharacterOperation(peer.Protocol, operationRequest);
       if (operation.IsValid)
       {
-        Character matchingCharacter = _services.GetRequiredService<IllarionContext>().Characters.
+        Character matchingCharacter = _services.GetRequiredService<IServerContext>().Characters.
           Where(c => c.AccountId == peer.Account.AccountId && c.CharacterId == operation.CharacterId).
           FirstOrDefault();
         if (matchingCharacter != null)

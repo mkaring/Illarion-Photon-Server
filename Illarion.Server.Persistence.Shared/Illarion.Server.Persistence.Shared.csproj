@@ -7,6 +7,7 @@
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>../IllarionDevelopment.snk</AssemblyOriginatorKeyFile>
+    <RootNamespace>Illarion.Server.Persistence</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -22,13 +23,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Illarion.Server.Persistence.Accounts\Illarion.Server.Persistence.Accounts.csproj" />
-    <ProjectReference Include="..\Illarion.Server.Persistence.Shared\Illarion.Server.Persistence.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
