@@ -67,7 +67,7 @@ namespace Illarion.Server.Photon
           Where(a => a.AccountName.Equals(operation.AccountName, StringComparison.Ordinal)).
           FirstOrDefault();
 
-        if ((matchingAccount != null) && (matchingAccount.Password.Equals(operation.Password, StringComparison.Ordinal)))
+        if ((matchingAccount != null) && (PasswordHashing.VerifyPasswordHash(operation.Password, matchingAccount.Password)))
         {
           peer.Account = matchingAccount;
           peer.SetCurrentOperationHandler(_services.GetRequiredService<IAccountOperationHandler>());
@@ -108,7 +108,7 @@ namespace Illarion.Server.Photon
           return new OperationResponse(operationRequest.OperationCode) { ReturnCode = (byte)RegisterNewAccountOperationReturnCode.EMailAlreadyUsed };
         }
 
-        accounts.Add(new Account(operation.AccountName) { EMail = operation.EMail.ToString(), Password = operation.Password });
+        accounts.Add(new Account(operation.AccountName) { EMail = operation.EMail.ToString(), Password = PasswordHashing.GetPasswordHash(operation.Password) });
         accountsContext.SaveChanges();
         return new OperationResponse(operationRequest.OperationCode) { ReturnCode = (byte)RegisterNewAccountOperationReturnCode.Success };
       }

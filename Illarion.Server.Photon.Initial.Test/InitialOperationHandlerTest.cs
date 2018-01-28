@@ -242,7 +242,7 @@ namespace Illarion.Server.Photon
         new Account("TestAccount")
         {
           EMail = "test@illarion.org",
-          Password = "test1234"
+          Password = PasswordHashing.GetPasswordHash("test1234")
         });
       ctx.SaveChanges();
     }
