@@ -19,20 +19,14 @@ namespace Illarion.Server.Photon
     [InlineData("de"), InlineData("de-DE"), InlineData("en"), InlineData("en-US"), InlineData("en-GB")]
     public static void ConnectedSetCultureTest(string cultureName)
     {
-      IServiceProvider serviceProvider = new ServiceCollection().BuildServiceProvider();
-
-      var operationHandler = new InitialOperationHandler(serviceProvider);
-      var application = new TestApplication(operationHandler);
-      var applicationProxy = new PhotonApplicationProxy(application);
-      applicationProxy.Start();
+      PhotonApplicationProxy applicationProxy = StartTestApplication();
+      var application = (TestApplication)applicationProxy.Application;
       try
       {
         var testClient = new UnitTestClient();
         testClient.Connect(applicationProxy);
 
-        Assert.True(testClient.Connected);
-        Assert.Equal(1, applicationProxy.ClientCount);
-        Assert.NotNull(application.LastCreatedPeer);
+        AssertInitialConnection(applicationProxy, testClient);
 
         SendResult result = testClient.SendOperationRequest(
           new OperationRequest(
@@ -48,6 +42,7 @@ namespace Illarion.Server.Photon
         Assert.Equal((int)SetCultureOperationReturnCode.Success, response.ReturnCode);
 
         Assert.Equal(application.LastCreatedPeer.Culture, CultureInfo.GetCultureInfo(cultureName));
+        Assert.IsAssignableFrom<IInitialOperationHandler>(application.LastCreatedPeer.CurrentOperationHandler);
       }
       finally
       {
@@ -66,30 +61,16 @@ namespace Illarion.Server.Photon
         AddSingleton<IAccountOperationHandler>(accountOperationHandler).
         BuildServiceProvider();
 
-      {
-        IAccountsContext ctx = serviceProvider.GetRequiredService<IAccountsContext>();
-        ctx.Accounts.Add(
-          new Account("TestAccount")
-          {
-            EMail = "test@illarion.org",
-            Password = "test1234"
-          });
-        ctx.SaveChanges();
-      }
+      CreateTestAccount(serviceProvider);
 
-      var operationHandler = new InitialOperationHandler(serviceProvider);
-      var application = new TestApplication(operationHandler);
-      var applicationProxy = new PhotonApplicationProxy(application);
-      applicationProxy.Start();
-
+      PhotonApplicationProxy applicationProxy = StartTestApplication(serviceProvider);
+      var application = (TestApplication)applicationProxy.Application;
       try
       {
         var testClient = new UnitTestClient();
         testClient.Connect(applicationProxy);
 
-        Assert.True(testClient.Connected);
-        Assert.Equal(1, applicationProxy.ClientCount);
-        Assert.NotNull(application.LastCreatedPeer);
+        AssertInitialConnection(applicationProxy, testClient);
 
         Assert.Equal(SendResult.Ok, testClient.InitializeEncyption(10000));
 
@@ -116,6 +97,167 @@ namespace Illarion.Server.Photon
       {
         applicationProxy.Stop();
       }
+    }
+
+    [Trait("Category", "Networking")]
+    [Fact]
+    public static void ConnectedLoginAccountNotEncryptedTest()
+    {
+      PhotonApplicationProxy applicationProxy = StartTestApplication();
+      var application = (TestApplication)applicationProxy.Application;
+      try
+      {
+        var testClient = new UnitTestClient();
+        testClient.Connect(applicationProxy);
+
+        AssertInitialConnection(applicationProxy, testClient);
+
+        SendResult result = testClient.SendOperationRequest(
+                  new OperationRequest(
+                    (byte)InitialOperationCode.LoginAccount,
+                    new Dictionary<byte, object>() {
+              { (byte) LoginAccountOperationParameterCode.AccountName, "TestAccount" },
+              { (byte) LoginAccountOperationParameterCode.Password, "test1234" },
+                    }));
+        Assert.Equal(SendResult.Ok, result);
+
+        OperationResponse response = testClient.WaitForOperationResponse(100);
+        Assert.NotNull(response);
+        Assert.Equal((byte)InitialOperationCode.LoginAccount, response.OperationCode);
+        Assert.Equal((int)LoginAccountOperationReturnCode.NotEncrypted, response.ReturnCode);
+
+        Assert.Null(application.LastCreatedPeer.Account);
+        Assert.IsAssignableFrom<IInitialOperationHandler>(application.LastCreatedPeer.CurrentOperationHandler);
+      }
+      finally
+      {
+        applicationProxy.Stop();
+      }
+    }
+
+    [Trait("Category", "Networking")]
+    [Fact]
+    public static void ConnectedLoginAccountWrongUserNameTest()
+    {
+
+      IServiceProvider serviceProvider = new ServiceCollection().
+        AddIllarionTestPersistanceContext().
+        BuildServiceProvider();
+
+      CreateTestAccount(serviceProvider);
+
+      PhotonApplicationProxy applicationProxy = StartTestApplication(serviceProvider);
+      var application = (TestApplication)applicationProxy.Application;
+      try
+      {
+        var testClient = new UnitTestClient();
+        testClient.Connect(applicationProxy);
+
+        AssertInitialConnection(applicationProxy, testClient);
+
+        Assert.Equal(SendResult.Ok, testClient.InitializeEncyption(10000));
+
+        SendResult result = testClient.SendOperationRequest(
+          new OperationRequest(
+            (byte)InitialOperationCode.LoginAccount,
+            new Dictionary<byte, object>() {
+              { (byte) LoginAccountOperationParameterCode.AccountName, "TestAccount2" },
+              { (byte) LoginAccountOperationParameterCode.Password, "test1234" },
+            }), encrypted: true);
+        Assert.Equal(SendResult.Ok, result);
+
+        OperationResponse response = testClient.WaitForOperationResponse(10000);
+        Assert.NotNull(response);
+        Assert.Equal((byte)InitialOperationCode.LoginAccount, response.OperationCode);
+        Assert.Equal((int)LoginAccountOperationReturnCode.WrongNameOrPassword, response.ReturnCode);
+
+        Assert.Null(application.LastCreatedPeer.Account);
+        Assert.IsAssignableFrom<IInitialOperationHandler>(application.LastCreatedPeer.CurrentOperationHandler);
+      }
+      finally
+      {
+        applicationProxy.Stop();
+      }
+    }
+
+    [Trait("Category", "Networking")]
+    [Fact]
+    public static void ConnectedLoginAccountWrongPasswordTest()
+    {
+
+      IServiceProvider serviceProvider = new ServiceCollection().
+        AddIllarionTestPersistanceContext().
+        BuildServiceProvider();
+
+      CreateTestAccount(serviceProvider);
+
+      PhotonApplicationProxy applicationProxy = StartTestApplication(serviceProvider);
+      var application = (TestApplication)applicationProxy.Application;
+      try
+      {
+        var testClient = new UnitTestClient();
+        testClient.Connect(applicationProxy);
+
+        AssertInitialConnection(applicationProxy, testClient);
+
+        Assert.Equal(SendResult.Ok, testClient.InitializeEncyption(10000));
+
+        SendResult result = testClient.SendOperationRequest(
+          new OperationRequest(
+            (byte)InitialOperationCode.LoginAccount,
+            new Dictionary<byte, object>() {
+              { (byte) LoginAccountOperationParameterCode.AccountName, "TestAccount" },
+              { (byte) LoginAccountOperationParameterCode.Password, "test123456" },
+            }), encrypted: true);
+        Assert.Equal(SendResult.Ok, result);
+
+        OperationResponse response = testClient.WaitForOperationResponse(10000);
+        Assert.NotNull(response);
+        Assert.Equal((byte)InitialOperationCode.LoginAccount, response.OperationCode);
+        Assert.Equal((int)LoginAccountOperationReturnCode.WrongNameOrPassword, response.ReturnCode);
+
+        Assert.Null(application.LastCreatedPeer.Account);
+        Assert.IsAssignableFrom<IInitialOperationHandler>(application.LastCreatedPeer.CurrentOperationHandler);
+      }
+      finally
+      {
+        applicationProxy.Stop();
+      }
+    }
+
+    private static void AssertInitialConnection(PhotonApplicationProxy applicationProxy, UnitTestClient testClient)
+    {
+      var application = (TestApplication)applicationProxy.Application;
+
+      Assert.True(testClient.Connected);
+      Assert.Equal(1, applicationProxy.ClientCount);
+      Assert.NotNull(application.LastCreatedPeer);
+      Assert.IsAssignableFrom<IInitialOperationHandler>(application.LastCreatedPeer.CurrentOperationHandler);
+    }
+
+    private static void CreateTestAccount(IServiceProvider serviceProvider)
+    {
+      IAccountsContext ctx = serviceProvider.GetRequiredService<IAccountsContext>();
+      ctx.Accounts.Add(
+        new Account("TestAccount")
+        {
+          EMail = "test@illarion.org",
+          Password = "test1234"
+        });
+      ctx.SaveChanges();
+    }
+
+    private static PhotonApplicationProxy StartTestApplication() =>
+      StartTestApplication(new ServiceCollection().BuildServiceProvider());
+
+    private static PhotonApplicationProxy StartTestApplication(IServiceProvider serviceProvider)
+    {
+      var operationHandler = new InitialOperationHandler(serviceProvider);
+      var application = new TestApplication(operationHandler);
+      var applicationProxy = new PhotonApplicationProxy(application);
+      applicationProxy.Start();
+
+      return applicationProxy;
     }
 
     private sealed class TestAccountOperationHandler : IAccountOperationHandler
