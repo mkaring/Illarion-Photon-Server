@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using Illarion.Net.Common;
 using Illarion.Net.Common.Operations.Initial;
 using Illarion.Server.Persistence;
@@ -99,6 +100,58 @@ namespace Illarion.Server.Photon
         Assert.Equal("TestAccount", application.LastCreatedPeer.Account.AccountName);
 
         Assert.Same(accountOperationHandler, application.LastCreatedPeer.CurrentOperationHandler);
+      }
+      finally
+      {
+        applicationProxy.Stop();
+      }
+    }
+
+    [Trait("Category", "Networking")]
+    [Fact]
+    public static void ConnectedRegisterNewAccountTest()
+    {
+      var accountOperationHandler = new TestAccountOperationHandler();
+
+      IServiceProvider serviceProvider = new ServiceCollection().
+        AddIllarionTestPersistanceContext().
+        AddSingleton<IAccountOperationHandler>(accountOperationHandler).
+        BuildServiceProvider();
+
+      PhotonApplicationProxy applicationProxy = StartTestApplication(serviceProvider);
+      var application = (TestApplication)applicationProxy.Application;
+      try
+      {
+        var testClient = new UnitTestClient();
+        testClient.Connect(applicationProxy);
+
+        AssertInitialConnection(applicationProxy, testClient);
+
+        Assert.Equal(SendResult.Ok, testClient.InitializeEncyption(10000));
+
+        SendResult result = testClient.SendOperationRequest(
+          new OperationRequest(
+            (byte)InitialOperationCode.RegisterNewAccount,
+            new Dictionary<byte, object>() {
+              { (byte) RegisterNewAccountOperationRequestParameterCode.AccountName, "TestAccount" },
+              { (byte) RegisterNewAccountOperationRequestParameterCode.Password, "test1234" },
+              { (byte) RegisterNewAccountOperationRequestParameterCode.EMail, "test@illarion.org" },
+            }), encrypted: true);
+        Assert.Equal(SendResult.Ok, result);
+
+        OperationResponse response = testClient.WaitForOperationResponse(10000);
+        Assert.NotNull(response);
+        Assert.Equal((byte)InitialOperationCode.RegisterNewAccount, response.OperationCode);
+        Assert.Equal((int)RegisterNewAccountOperationReturnCode.Success, response.ReturnCode);
+
+        Account account = serviceProvider.GetService<AccountsContext>().Accounts.
+          Where(a => a.AccountName == "TestAccount" && PasswordHashing.VerifyPasswordHash("test1234", a.Password)).
+          SingleOrDefault();
+        Assert.NotNull(account);
+        Assert.Equal("test@illarion.org", account.EMail, ignoreCase: true);
+
+        Assert.Null(application.LastCreatedPeer.Account);
+        Assert.IsAssignableFrom<IInitialOperationHandler>(application.LastCreatedPeer.CurrentOperationHandler);
       }
       finally
       {
