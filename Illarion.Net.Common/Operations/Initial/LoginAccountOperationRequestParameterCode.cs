@@ -1,6 +1,6 @@
-﻿namespace Illarion.Net.Common.Operations.Initial
+namespace Illarion.Net.Common.Operations.Initial
 {
-  public enum LoginAccountOperationParameterCode : byte
+  public enum LoginAccountOperationRequestParameterCode : byte
   {
     /// <summary>
     /// The name of the account encoded as <see cref="string"/>.

@@ -16,7 +16,7 @@ namespace Illarion.Server.Photon.Rpc
     public static void DecodeOperationRequestTest(string cultureName, int lcid, bool isValid, bool annotationIsValid)
     {
       var data = new Dictionary<byte, object>() {
-        { (byte)SetCultureOperationParameterCode.CultureName, cultureName },
+        { (byte)SetCultureOperationRequestParameterCode.CultureName, cultureName },
       };
 
       var operationRequest = new OperationRequest((byte)InitialOperationCode.SetCulture, data);

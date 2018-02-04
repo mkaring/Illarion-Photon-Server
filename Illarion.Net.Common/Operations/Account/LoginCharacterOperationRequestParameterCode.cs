@@ -1,6 +1,6 @@
-﻿namespace Illarion.Net.Common.Operations.Account
+namespace Illarion.Net.Common.Operations.Account
 {
-  public enum LoginCharacterOperationParameterCode : byte
+  public enum LoginCharacterOperationRequestParameterCode : byte
   {
     /// <summary>
     /// The name of the account encoded as <see cref="System.Guid"/>.

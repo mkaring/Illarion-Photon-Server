@@ -12,7 +12,7 @@ namespace Illarion.Server.Photon.Rpc
     {
     }
 
-    [DataMember(Name = nameof(CharacterId), Code = (byte)LoginCharacterOperationParameterCode.CharacterId)]
+    [DataMember(Name = nameof(CharacterId), Code = (byte)LoginCharacterOperationRequestParameterCode.CharacterId)]
     [Required]
     public Guid CharacterId { get; set; }
   }

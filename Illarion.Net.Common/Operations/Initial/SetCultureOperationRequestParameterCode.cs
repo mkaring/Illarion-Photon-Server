@@ -1,6 +1,6 @@
-﻿namespace Illarion.Net.Common.Operations.Initial
+namespace Illarion.Net.Common.Operations.Initial
 {
-  public enum SetCultureOperationParameterCode : byte
+  public enum SetCultureOperationRequestParameterCode : byte
   {
     /// <summary>
     /// The name of the culture. Expects something like "de-DE" or "en-US".

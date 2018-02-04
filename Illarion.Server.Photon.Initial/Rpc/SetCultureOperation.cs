@@ -12,7 +12,7 @@ namespace Illarion.Server.Photon.Rpc
     {
     }
 
-    [DataMember(Name = nameof(CultureName), Code = (byte)SetCultureOperationParameterCode.CultureName)]
+    [DataMember(Name = nameof(CultureName), Code = (byte)SetCultureOperationRequestParameterCode.CultureName)]
     [Required, MinLength(1)]
     public string CultureName { get; set; }
 

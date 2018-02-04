@@ -12,17 +12,17 @@ namespace Illarion.Server.Photon.Rpc
     {
     }
 
-    [DataMember(Name = nameof(AccountName), Code = (byte)RegisterNewAccountOperationParameterCode.AccountName)]
+    [DataMember(Name = nameof(AccountName), Code = (byte)RegisterNewAccountOperationRequestParameterCode.AccountName)]
     [Required, StringLength(16, MinimumLength = 4)]
     public string AccountName { get; set; }
 
-    [DataMember(Name = nameof(EMail), Code = (byte)RegisterNewAccountOperationParameterCode.EMail)]
+    [DataMember(Name = nameof(EMail), Code = (byte)RegisterNewAccountOperationRequestParameterCode.EMail)]
     [EmailAddress, Required]
     public string RawEMail { get; set; }
 
     internal MailAddress EMail => new MailAddress(RawEMail);
 
-    [DataMember(Name = nameof(Password), Code = (byte)RegisterNewAccountOperationParameterCode.Password)]
+    [DataMember(Name = nameof(Password), Code = (byte)RegisterNewAccountOperationRequestParameterCode.Password)]
     [Required, StringLength(40, MinimumLength = 8)]
     public string Password { get; set; }
   }

@@ -1,8 +1,8 @@
-using System;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.EventLog;
 using Photon.SocketServer;
+using System;
 
 namespace Illarion.Server.Photon
 {

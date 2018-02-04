@@ -32,7 +32,7 @@ namespace Illarion.Server.Photon
           new OperationRequest(
             (byte)InitialOperationCode.SetCulture,
             new Dictionary<byte, object>() {
-              { (byte) SetCultureOperationParameterCode.CultureName, cultureName },
+              { (byte) SetCultureOperationRequestParameterCode.CultureName, cultureName },
             }));
         Assert.Equal(SendResult.Ok, result);
 
@@ -78,8 +78,8 @@ namespace Illarion.Server.Photon
           new OperationRequest(
             (byte)InitialOperationCode.LoginAccount,
             new Dictionary<byte, object>() {
-              { (byte) LoginAccountOperationParameterCode.AccountName, "TestAccount" },
-              { (byte) LoginAccountOperationParameterCode.Password, "test1234" },
+              { (byte) LoginAccountOperationRequestParameterCode.AccountName, "TestAccount" },
+              { (byte) LoginAccountOperationRequestParameterCode.Password, "test1234" },
             }), encrypted: true);
         Assert.Equal(SendResult.Ok, result);
 
@@ -116,8 +116,8 @@ namespace Illarion.Server.Photon
                   new OperationRequest(
                     (byte)InitialOperationCode.LoginAccount,
                     new Dictionary<byte, object>() {
-              { (byte) LoginAccountOperationParameterCode.AccountName, "TestAccount" },
-              { (byte) LoginAccountOperationParameterCode.Password, "test1234" },
+              { (byte) LoginAccountOperationRequestParameterCode.AccountName, "TestAccount" },
+              { (byte) LoginAccountOperationRequestParameterCode.Password, "test1234" },
                     }));
         Assert.Equal(SendResult.Ok, result);
 
@@ -161,8 +161,8 @@ namespace Illarion.Server.Photon
           new OperationRequest(
             (byte)InitialOperationCode.LoginAccount,
             new Dictionary<byte, object>() {
-              { (byte) LoginAccountOperationParameterCode.AccountName, "TestAccount2" },
-              { (byte) LoginAccountOperationParameterCode.Password, "test1234" },
+              { (byte) LoginAccountOperationRequestParameterCode.AccountName, "TestAccount2" },
+              { (byte) LoginAccountOperationRequestParameterCode.Password, "test1234" },
             }), encrypted: true);
         Assert.Equal(SendResult.Ok, result);
 
@@ -206,8 +206,8 @@ namespace Illarion.Server.Photon
           new OperationRequest(
             (byte)InitialOperationCode.LoginAccount,
             new Dictionary<byte, object>() {
-              { (byte) LoginAccountOperationParameterCode.AccountName, "TestAccount" },
-              { (byte) LoginAccountOperationParameterCode.Password, "test123456" },
+              { (byte) LoginAccountOperationRequestParameterCode.AccountName, "TestAccount" },
+              { (byte) LoginAccountOperationRequestParameterCode.Password, "test123456" },
             }), encrypted: true);
         Assert.Equal(SendResult.Ok, result);
 

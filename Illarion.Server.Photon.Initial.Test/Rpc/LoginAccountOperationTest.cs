@@ -15,8 +15,8 @@ namespace Illarion.Server.Photon.Rpc
     public static void DecodeOperationRequestTest(string accountName, string password, bool isValid, bool annotationIsValid)
     {
       var data = new Dictionary<byte, object>() {
-        { (byte)LoginAccountOperationParameterCode.AccountName, accountName },
-        { (byte)LoginAccountOperationParameterCode.Password, password },
+        { (byte)LoginAccountOperationRequestParameterCode.AccountName, accountName },
+        { (byte)LoginAccountOperationRequestParameterCode.Password, password },
       };
 
       var operationRequest = new OperationRequest((byte)InitialOperationCode.LoginAccount, data);
