@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Illarion.Net.Common;
 using Illarion.Net.Common.Operations.Account;
@@ -29,7 +30,9 @@ namespace Illarion.Server.Photon
       switch ((AccountOperationCode)operationRequest.OperationCode)
       {
         case AccountOperationCode.ListCharacters:
-          break;
+          return OnListCharactersOperationRequest(peer, operationRequest);
+        case AccountOperationCode.GetCharacter:
+          return OnGetCharacterOperationRequest(peer, operationRequest);
         case AccountOperationCode.LoginCharacter:
           return OnLoginCharacterOperationRequest(peer, operationRequest);
         case AccountOperationCode.LogoutAccount:
@@ -37,6 +40,61 @@ namespace Illarion.Server.Photon
       }
 
       return InvalidOperation(operationRequest);
+    }
+
+    private OperationResponse OnListCharactersOperationRequest(PlayerPeerBase peer, OperationRequest operationRequest)
+    {
+      IQueryable<Character> characters = _services.GetRequiredService<IServerContext>().Characters.
+        Where(c => c.AccountId == peer.Account.AccountId);
+
+      var responseData = new ListCharactersReponse() { CharacterList = new List<OperationResponse>() };
+
+      foreach (Character character in characters)
+      {
+        responseData.CharacterList.Add(GetReponseForCharacter((byte) AccountOperationCode.GetCharacter, character));
+      }
+
+      return new OperationResponse(operationRequest.OperationCode)
+      {
+        ReturnCode = (byte)GetCharacterOperationReturnCode.Success,
+        Parameters = responseData.ToDictionary()
+      };
+    }
+
+    private OperationResponse OnGetCharacterOperationRequest(PlayerPeerBase peer, OperationRequest operationRequest)
+    {
+      var operation = new GetCharacterOperation(peer.Protocol, operationRequest);
+      if (operation.IsValid)
+      {
+        Character matchingCharacter = _services.GetRequiredService<IServerContext>().Characters.
+          Where(c => c.AccountId == peer.Account.AccountId && c.CharacterId == operation.CharacterId).
+          FirstOrDefault();
+        if (matchingCharacter != null)
+        {
+          return GetReponseForCharacter(operationRequest.OperationCode, matchingCharacter);
+        }
+        return new OperationResponse(operationRequest.OperationCode) { ReturnCode = (byte)GetCharacterOperationReturnCode.DoesNotExist };
+      }
+      else
+      {
+        return new OperationResponse(operationRequest.OperationCode) { ReturnCode = (byte)GetCharacterOperationReturnCode.Malformed, DebugMessage = operation.GetErrorMessage() };
+      }
+    }
+
+    private static OperationResponse GetReponseForCharacter(byte operationCode, Character character)
+    {
+      var responseData = new GetCharacterReponse()
+      {
+        CharacterId = character.CharacterId,
+        CharacterName = character.Name,
+        CharacterStatus = (character.Status == CharacterStatus.Default) ? 0 : 1
+      };
+
+      return new OperationResponse(operationCode)
+      {
+        ReturnCode = (byte)GetCharacterOperationReturnCode.Success,
+        Parameters = responseData.ToDictionary()
+      };
     }
 
     private OperationResponse OnLoginCharacterOperationRequest(PlayerPeerBase peer, OperationRequest operationRequest)
