@@ -12,7 +12,7 @@ namespace Illarion.Server.Photon
     private readonly ILogger _logger;
 
     protected PlayerPeerOperationHandler(IServiceProvider serviceProvider) =>
-      _logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger(nameof(PlayerPeerOperationHandler));
+      _logger = serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(PlayerPeerOperationHandler));
 
     public virtual void OnDisconnect(PeerBase peer)
     {
