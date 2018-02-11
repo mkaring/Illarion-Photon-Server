@@ -9,17 +9,23 @@ using Microsoft.Extensions.DependencyInjection;
 using Photon.SocketServer;
 using Photon.SocketServer.UnitTesting;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Illarion.Server.Photon
 {
   public sealed class InitialOperationHandlerTest
   {
+    private readonly ITestOutputHelper _output;
+
+    public InitialOperationHandlerTest(ITestOutputHelper output) =>
+      _output = output ?? throw new ArgumentNullException(nameof(output));
+
     [Trait("Category", "Networking")]
     [Theory]
     [InlineData("de"), InlineData("de-DE"), InlineData("en"), InlineData("en-US"), InlineData("en-GB")]
-    public static void ConnectedSetCultureTest(string cultureName)
+    public void ConnectedSetCultureTest(string cultureName)
     {
-      PhotonApplicationProxy applicationProxy = StartTestApplication();
+      PhotonApplicationProxy applicationProxy = StartTestApplication(_output);
       var application = (TestApplication)applicationProxy.Application;
       try
       {
@@ -52,11 +58,12 @@ namespace Illarion.Server.Photon
 
     [Trait("Category", "Networking")]
     [Fact]
-    public static void ConnectedLoginAccountTest()
+    public void ConnectedLoginAccountTest()
     {
       var accountOperationHandler = new TestAccountOperationHandler();
 
       IServiceProvider serviceProvider = new ServiceCollection().
+        AddIllarionTestLogging(_output).
         AddIllarionTestPersistanceContext().
         AddSingleton<IAccountOperationHandler>(accountOperationHandler).
         BuildServiceProvider();
@@ -101,9 +108,9 @@ namespace Illarion.Server.Photon
 
     [Trait("Category", "Networking")]
     [Fact]
-    public static void ConnectedLoginAccountNotEncryptedTest()
+    public void ConnectedLoginAccountNotEncryptedTest()
     {
-      PhotonApplicationProxy applicationProxy = StartTestApplication();
+      PhotonApplicationProxy applicationProxy = StartTestApplication(_output);
       var application = (TestApplication)applicationProxy.Application;
       try
       {
@@ -137,10 +144,11 @@ namespace Illarion.Server.Photon
 
     [Trait("Category", "Networking")]
     [Fact]
-    public static void ConnectedLoginAccountWrongUserNameTest()
+    public void ConnectedLoginAccountWrongUserNameTest()
     {
 
       IServiceProvider serviceProvider = new ServiceCollection().
+        AddIllarionTestLogging(_output).
         AddIllarionTestPersistanceContext().
         BuildServiceProvider();
 
@@ -182,10 +190,11 @@ namespace Illarion.Server.Photon
 
     [Trait("Category", "Networking")]
     [Fact]
-    public static void ConnectedLoginAccountWrongPasswordTest()
+    public void ConnectedLoginAccountWrongPasswordTest()
     {
 
       IServiceProvider serviceProvider = new ServiceCollection().
+        AddIllarionTestLogging(_output).
         AddIllarionTestPersistanceContext().
         BuildServiceProvider();
 
@@ -247,8 +256,8 @@ namespace Illarion.Server.Photon
       ctx.SaveChanges();
     }
 
-    private static PhotonApplicationProxy StartTestApplication() =>
-      StartTestApplication(new ServiceCollection().BuildServiceProvider());
+    private static PhotonApplicationProxy StartTestApplication(ITestOutputHelper outputHelper) =>
+      StartTestApplication(new ServiceCollection().AddIllarionTestLogging(outputHelper).BuildServiceProvider());
 
     private static PhotonApplicationProxy StartTestApplication(IServiceProvider serviceProvider)
     {
