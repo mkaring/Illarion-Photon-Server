@@ -25,7 +25,7 @@ namespace Illarion.Server.Photon
       IServiceCollection services = _serviceProviderFactory.CreateBuilder(new ServiceCollection());
       services.AddLogging(builder =>
         {
-          builder.AddEventLog(new EventLogSettings() { SourceName = "Application", LogName="Illarion Server", Filter = (m, l) => l >= LogLevel.Error });
+          //builder.AddEventLog(new EventLogSettings() { SourceName = "Application", LogName="Illarion Server", Filter = (m, l) => l >= LogLevel.Error });
           builder.AddConsole();
 #if DEBUG
           builder.AddDebug();
@@ -51,7 +51,9 @@ namespace Illarion.Server.Photon
       var exception = e.ExceptionObject as Exception;
       LogLevel level = e.IsTerminating ? LogLevel.Critical : LogLevel.Error;
 
-      _services.GetRequiredService<ILogger>().Log(level, 0, e.ExceptionObject.ToString(), exception, (m, ex) => m);;
+      _services.GetRequiredService<ILoggerFactory>().
+        CreateLogger(nameof(ServerApplication)).
+        Log(level, 0, e.ExceptionObject.ToString(), exception, (m, ex) => m);;
     }
   }
 }
