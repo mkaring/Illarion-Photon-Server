@@ -4,25 +4,22 @@ using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 namespace Illarion.Server.Persistence.Accounts
 {
-  //public class AccountsContext : DbContext
-  //{
-  //  public AccountsContext(DbContextOptions<AccountsContext> options) : base(options)
-  //  {
-  //  }
-
-  //  public DbSet<Account> Accounts { get; set; }
-
-  //  protected override void OnModelCreating(ModelBuilder modelBuilder)
-  //  {
-  //    CreateModel(modelBuilder);
-
-  //    base.OnModelCreating(modelBuilder);
-  //  }
-  //}
-
-  public static class AccountsContext
+  public sealed class AccountsContext : DbContext
   {
-    public static void CreateModel(ModelBuilder modelBuilder)
+    public AccountsContext(DbContextOptions<AccountsContext> options) : base(options)
+    {
+    }
+
+    public DbSet<Account> Accounts { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+      CreateModel(modelBuilder);
+
+      base.OnModelCreating(modelBuilder);
+    }
+
+    private static void CreateModel(ModelBuilder modelBuilder)
     {
       if (modelBuilder == null) throw new ArgumentNullException(nameof(modelBuilder));
 

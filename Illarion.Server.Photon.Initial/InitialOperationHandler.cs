@@ -63,7 +63,7 @@ namespace Illarion.Server.Photon
       var operation = new LoginAccountOperation(peer.Protocol, operationRequest);
       if (operation.IsValid)
       {
-        Account matchingAccount = _services.GetRequiredService<IAccountsContext>().Accounts.
+        Account matchingAccount = _services.GetRequiredService<AccountsContext>().Accounts.
           Where(a => a.AccountName.Equals(operation.AccountName, StringComparison.Ordinal)).
           FirstOrDefault();
 
@@ -92,7 +92,7 @@ namespace Illarion.Server.Photon
       var operation = new RegisterNewAccountOperation(peer.Protocol, operationRequest);
       if (operation.IsValid && Validator.TryValidateObject(operation, new ValidationContext(operation), null))
       {
-        IAccountsContext accountsContext = _services.GetRequiredService<IAccountsContext>();
+        AccountsContext accountsContext = _services.GetRequiredService<AccountsContext>();
         DbSet<Account> accounts = accountsContext.Accounts;
         Account matchingAccountName = accounts.Where(a => a.AccountName.Equals(operation.AccountName, StringComparison.Ordinal)).FirstOrDefault();
 

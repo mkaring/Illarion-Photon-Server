@@ -1,8 +1,10 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.EventLog;
 using Photon.SocketServer;
 using System;
+using System.IO;
 
 namespace Illarion.Server.Photon
 {
@@ -22,6 +24,11 @@ namespace Illarion.Server.Photon
 
     protected override void Setup()
     {
+      IConfigurationRoot configuration = new ConfigurationBuilder()
+        .SetBasePath(BinaryPath)
+        .AddJsonFile("IllarionServerConfig.json")
+        .Build();
+
       IServiceCollection services = _serviceProviderFactory.CreateBuilder(new ServiceCollection());
       services.AddLogging(builder =>
         {
@@ -31,7 +38,7 @@ namespace Illarion.Server.Photon
           builder.AddDebug();
 #endif
         });
-      services.AddIllarionPersistanceContext();
+      services.AddIllarionPersistanceContext(configuration);
 
       services.AddTransient<IInitialOperationHandler>(s => new InitialOperationHandler(s));
       services.AddTransient<IAccountOperationHandler>(s => new AccountOperationHandler(s));
@@ -53,7 +60,7 @@ namespace Illarion.Server.Photon
 
       _services.GetRequiredService<ILoggerFactory>().
         CreateLogger(nameof(ServerApplication)).
-        Log(level, 0, e.ExceptionObject.ToString(), exception, (m, ex) => m);;
+        Log(level, 0, e.ExceptionObject.ToString(), exception, (m, ex) => m); ;
     }
   }
 }

@@ -44,7 +44,7 @@ namespace Illarion.Server.Photon
 
     private OperationResponse OnListCharactersOperationRequest(PlayerPeerBase peer, OperationRequest operationRequest)
     {
-      IQueryable<Character> characters = _services.GetRequiredService<IServerContext>().Characters.
+      IQueryable<Character> characters = _services.GetRequiredService<ServerContext>().Characters.
         Where(c => c.AccountId == peer.Account.AccountId);
 
       var responseData = new ListCharactersReponse() { CharacterList = new List<OperationResponse>() };
@@ -66,7 +66,7 @@ namespace Illarion.Server.Photon
       var operation = new GetCharacterOperation(peer.Protocol, operationRequest);
       if (operation.IsValid)
       {
-        Character matchingCharacter = _services.GetRequiredService<IServerContext>().Characters.
+        Character matchingCharacter = _services.GetRequiredService<ServerContext>().Characters.
           Where(c => c.AccountId == peer.Account.AccountId && c.CharacterId == operation.CharacterId).
           FirstOrDefault();
         if (matchingCharacter != null)
@@ -102,7 +102,7 @@ namespace Illarion.Server.Photon
       var operation = new LoginCharacterOperation(peer.Protocol, operationRequest);
       if (operation.IsValid)
       {
-        Character matchingCharacter = _services.GetRequiredService<IServerContext>().Characters.
+        Character matchingCharacter = _services.GetRequiredService<ServerContext>().Characters.
           Where(c => c.AccountId == peer.Account.AccountId && c.CharacterId == operation.CharacterId).
           FirstOrDefault();
         if (matchingCharacter != null)

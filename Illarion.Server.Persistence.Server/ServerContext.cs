@@ -5,25 +5,22 @@ using Microsoft.EntityFrameworkCore.ValueGeneration;
 
 namespace Illarion.Server.Persistence.Server
 {
-  //public class ServerContext : DbContext
-  //{
-  //  public ServerContext(DbContextOptions<ServerContext> options) : base(options)
-  //  {
-  //  }
-
-  //  public DbSet<Character> Characters { get; set; }
-  //  public DbSet<CharacterAttribute> CharacterAttributes { get; set; }
-
-  //  protected override void OnModelCreating(ModelBuilder modelBuilder)
-  //  {
-  //    CreateModel(modelBuilder);
-  //    base.OnModelCreating(modelBuilder);
-  //  }
-  //}
-
-  public static class ServerContext
+  public sealed class ServerContext : DbContext
   {
-    public static void CreateModel(ModelBuilder modelBuilder)
+    public ServerContext(DbContextOptions<ServerContext> options) : base(options)
+    {
+    }
+
+    public DbSet<Character> Characters { get; set; }
+    public DbSet<CharacterAttribute> CharacterAttributes { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+      CreateModel(modelBuilder);
+      base.OnModelCreating(modelBuilder);
+    }
+
+    private static void CreateModel(ModelBuilder modelBuilder)
     {
       if (modelBuilder == null) throw new ArgumentNullException(nameof(modelBuilder));
 

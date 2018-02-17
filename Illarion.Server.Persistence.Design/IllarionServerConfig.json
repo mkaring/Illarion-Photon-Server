@@ -1,0 +1,6 @@
+{
+  "ConnectionStrings": {
+    "AccountsContext": "Server=localhost;Database=illarion;Username=postgres;Password=pg",
+    "ServerContext": "Server=localhost;Database=illarion;Username=postgres;Password=pg"
+  }
+}

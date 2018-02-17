@@ -21,7 +21,14 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.0.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.0.0" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Illarion.Server.Persistence.Accounts.Migrations\Illarion.Server.Persistence.Accounts.Migrations.csproj" />
+    <ProjectReference Include="..\Illarion.Server.Persistence.Server.Migrations\Illarion.Server.Persistence.Server.Migrations.csproj" />
   </ItemGroup>
 
   <ItemGroup>

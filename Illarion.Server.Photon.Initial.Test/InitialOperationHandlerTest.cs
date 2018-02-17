@@ -246,7 +246,7 @@ namespace Illarion.Server.Photon
 
     private static void CreateTestAccount(IServiceProvider serviceProvider)
     {
-      IAccountsContext ctx = serviceProvider.GetRequiredService<IAccountsContext>();
+      AccountsContext ctx = serviceProvider.GetRequiredService<AccountsContext>();
       ctx.Accounts.Add(
         new Account("TestAccount")
         {
