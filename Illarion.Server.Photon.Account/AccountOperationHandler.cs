@@ -36,7 +36,7 @@ namespace Illarion.Server.Photon
         case AccountOperationCode.LoginCharacter:
           return OnLoginCharacterOperationRequest(peer, operationRequest);
         case AccountOperationCode.LogoutAccount:
-          break;
+          return OnLogoutAccountOperationRequest(peer, operationRequest);
       }
 
       return InvalidOperation(operationRequest);
@@ -123,6 +123,13 @@ namespace Illarion.Server.Photon
       {
         return new OperationResponse(operationRequest.OperationCode) { ReturnCode = (byte)LoginCharacterOperationReturnCode.Malformed, DebugMessage = operation.GetErrorMessage() };
       }
+    }
+
+    private OperationResponse OnLogoutAccountOperationRequest(PlayerPeerBase peer, OperationRequest operationRequest)
+    {
+      peer.Account = null;
+      peer.SetCurrentOperationHandler(_services.GetRequiredService<IInitialOperationHandler>());
+      return new OperationResponse(operationRequest.OperationCode) { ReturnCode = (byte)LogoutAccountOperationReturnCode.Success };
     }
   }
 }
