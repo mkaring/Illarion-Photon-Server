@@ -1,5 +1,7 @@
-﻿namespace Illarion.Net.Common.Operations.Initial
+namespace Illarion.Net.Common.Operations.Initial
 {
+  /// <summary>Response code for <see cref="InitialOperationCode.RegisterNewAccount"/>.</summary>
+  /// <seealso cref="ReturnCode"/>
   public enum RegisterNewAccountOperationReturnCode : byte
   {
     /// <summary>The account was successfully created.</summary>
@@ -12,9 +14,6 @@
     EMailAlreadyUsed,
 
     /// <summary>The creation information for a new account are only accepted over a encrypted connection.</summary>
-    NotEncrypted,
-
-    /// <summary>The required parameters were not set or set with the wrong types.</summary>
-    Malformed
+    NotEncrypted
   }
 }

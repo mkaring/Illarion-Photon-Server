@@ -1,5 +1,7 @@
 namespace Illarion.Net.Common.Operations.Account
 {
+  /// <summary>Response code for <see cref="AccountOperationCode.LogoutAccount"/>.</summary>
+  /// <seealso cref="ReturnCode"/>
   public enum LogoutAccountOperationReturnCode : byte
   {
     /// <summary>The logout of the account was successful.</summary>

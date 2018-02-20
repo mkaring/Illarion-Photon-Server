@@ -1,5 +1,7 @@
-﻿namespace Illarion.Net.Common.Operations.Initial
+namespace Illarion.Net.Common.Operations.Initial
 {
+  /// <summary>Response code for <see cref="InitialOperationCode.LoginAccount"/>.</summary>
+  /// <seealso cref="ReturnCode"/>
   public enum LoginAccountOperationReturnCode : byte
   {
     /// <summary>The login to the account was successful.</summary>
@@ -16,9 +18,6 @@
     Blocked,
 
     /// <summary>This commands accepts the login information only in case they are send encrypted.</summary>
-    NotEncrypted,
-
-    /// <summary>The required parameters were not set or set with the wrong types.</summary>
-    Malformed
+    NotEncrypted
   }
 }
