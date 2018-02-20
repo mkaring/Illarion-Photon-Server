@@ -1,15 +1,14 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Net.Mail;
 using Illarion.Net.Common;
 using Illarion.Net.Common.Operations.Initial;
-using Illarion.Server.Persistence;
 using Illarion.Server.Persistence.Accounts;
 using Illarion.Server.Photon.Rpc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Photon.SocketServer;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Net.Mail;
 
 namespace Illarion.Server.Photon
 {
@@ -51,7 +50,7 @@ namespace Illarion.Server.Photon
       }
       else
       {
-        return new OperationResponse(operationRequest.OperationCode) { ReturnCode = (byte)SetCultureOperationReturnCode.Malformed, DebugMessage = operation.GetErrorMessage() };
+        return MalformedRequestResponse(operationRequest, operation);
       }
     }
 
@@ -80,7 +79,7 @@ namespace Illarion.Server.Photon
       }
       else
       {
-        return new OperationResponse(operationRequest.OperationCode) { ReturnCode = (byte)LoginAccountOperationReturnCode.Malformed, DebugMessage = operation.GetErrorMessage() };
+        return MalformedRequestResponse(operationRequest, operation);
       }
     }
 
@@ -114,7 +113,7 @@ namespace Illarion.Server.Photon
       }
       else
       {
-        return new OperationResponse(operationRequest.OperationCode) { ReturnCode = (byte)RegisterNewAccountOperationReturnCode.Malformed, DebugMessage = operation.GetErrorMessage() };
+        return MalformedRequestResponse(operationRequest, operation);
       }
     }
   }

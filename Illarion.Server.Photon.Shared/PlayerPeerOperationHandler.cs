@@ -58,5 +58,12 @@ namespace Illarion.Server.Photon
         ReturnCode = (int)ReturnCode.InternalServerError,
         DebugMessage = exception.Message
       };
+
+    protected static OperationResponse MalformedRequestResponse(OperationRequest operationRequest, Operation operation) =>
+      new OperationResponse(operationRequest.OperationCode)
+      {
+        ReturnCode = (int)ReturnCode.MalformedRequest,
+        DebugMessage = operation.GetErrorMessage()
+      };
   }
 }

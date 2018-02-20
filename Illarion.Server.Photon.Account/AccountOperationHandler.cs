@@ -5,7 +5,10 @@ using Illarion.Net.Common;
 using Illarion.Net.Common.Operations.Account;
 using Illarion.Server.Persistence;
 using Illarion.Server.Persistence.Server;
+using Illarion.Server.Photon.Properties;
 using Illarion.Server.Photon.Rpc;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Photon.SocketServer;
 
@@ -29,6 +32,8 @@ namespace Illarion.Server.Photon
 
       switch ((AccountOperationCode)operationRequest.OperationCode)
       {
+        case AccountOperationCode.CreateCharacter:
+          return OnCreateCharacterOperationRequest(peer, operationRequest);
         case AccountOperationCode.ListCharacters:
           return OnListCharactersOperationRequest(peer, operationRequest);
         case AccountOperationCode.GetCharacter:
@@ -77,7 +82,7 @@ namespace Illarion.Server.Photon
       }
       else
       {
-        return new OperationResponse(operationRequest.OperationCode) { ReturnCode = (byte)GetCharacterOperationReturnCode.Malformed, DebugMessage = operation.GetErrorMessage() };
+        return MalformedRequestResponse(operationRequest, operation);
       }
     }
 
@@ -121,7 +126,7 @@ namespace Illarion.Server.Photon
       }
       else
       {
-        return new OperationResponse(operationRequest.OperationCode) { ReturnCode = (byte)LoginCharacterOperationReturnCode.Malformed, DebugMessage = operation.GetErrorMessage() };
+        return MalformedRequestResponse(operationRequest, operation);
       }
     }
 
@@ -130,6 +135,83 @@ namespace Illarion.Server.Photon
       peer.Account = null;
       peer.SetCurrentOperationHandler(_services.GetRequiredService<IInitialOperationHandler>());
       return new OperationResponse(operationRequest.OperationCode) { ReturnCode = (byte)LogoutAccountOperationReturnCode.Success };
+    }
+
+    private OperationResponse OnCreateCharacterOperationRequest(PlayerPeerBase peer, OperationRequest operationRequest)
+    {
+      var operation = new CreateCharacterOperation(peer.Protocol, operationRequest);
+      if (operation.IsValid)
+      {
+        ServerContext serverCtx = _services.GetRequiredService<ServerContext>();
+        var anyCharacterWithSameName = serverCtx.Characters.Where(c => c.Name == operation.CharacterName).Any();
+        if (anyCharacterWithSameName)
+        {
+          return new OperationResponse(operationRequest.OperationCode)
+          {
+            ReturnCode = (byte)CreateCharacterOperationReturnCode.CreationFailed,
+            Parameters = new CreateCharacterReponse()
+            {
+              CharacterId = Guid.Empty,
+              InvalidFields = new List<byte>() { (byte)CreateCharacterOperationRequestParameterCode.CharacterName },
+              InvalidParamterMessages = new List<string>() { Resources.CharacterNameAlreadyUsed }
+            }.ToDictionary()
+          };
+        }
+        else
+        {
+          if (operation.Preview)
+          {
+            return new OperationResponse(operationRequest.OperationCode)
+            {
+              ReturnCode = (byte)CreateCharacterOperationReturnCode.CreationPossible,
+              Parameters = new CreateCharacterReponse()
+              {
+                CharacterId = Guid.Empty,
+                InvalidFields = new List<byte>(),
+                InvalidParamterMessages = new List<string>()
+              }.ToDictionary()
+            };
+          }
+          else
+          {
+            EntityEntry<Character> newCharacter;
+            using (IDbContextTransaction transaction = serverCtx.Database.BeginTransaction())
+            {
+              newCharacter = serverCtx.Characters.Add(
+                new Character(peer.Account.AccountId, operation.CharacterName)
+                {
+                  Status = CharacterStatus.Default
+                });
+              newCharacter.Entity.Attributes.Add(new CharacterAttribute(CharacterAttributeId.Agility) { Value = operation.Agility });
+              newCharacter.Entity.Attributes.Add(new CharacterAttribute(CharacterAttributeId.Constitution) { Value = operation.Constitution });
+              newCharacter.Entity.Attributes.Add(new CharacterAttribute(CharacterAttributeId.Dexterity) { Value = operation.Dexterity });
+              newCharacter.Entity.Attributes.Add(new CharacterAttribute(CharacterAttributeId.Essence) { Value = operation.Essence });
+              newCharacter.Entity.Attributes.Add(new CharacterAttribute(CharacterAttributeId.Intelligence) { Value = operation.Intelligence });
+              newCharacter.Entity.Attributes.Add(new CharacterAttribute(CharacterAttributeId.Perception) { Value = operation.Perception });
+              newCharacter.Entity.Attributes.Add(new CharacterAttribute(CharacterAttributeId.Strength) { Value = operation.Strength });
+              newCharacter.Entity.Attributes.Add(new CharacterAttribute(CharacterAttributeId.Willpower) { Value = operation.Willpower });
+
+              serverCtx.SaveChanges();
+              transaction.Commit();
+            }
+
+            return new OperationResponse(operationRequest.OperationCode)
+            {
+              ReturnCode = (byte)CreateCharacterOperationReturnCode.Success,
+              Parameters = new CreateCharacterReponse()
+              {
+                CharacterId = newCharacter.Entity.CharacterId,
+                InvalidFields = new List<byte>(),
+                InvalidParamterMessages = new List<string>()
+              }.ToDictionary()
+            };
+          }
+        }
+      }
+      else
+      {
+        return MalformedRequestResponse(operationRequest, operation);
+      }
     }
   }
 }

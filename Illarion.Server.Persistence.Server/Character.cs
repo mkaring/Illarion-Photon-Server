@@ -5,6 +5,12 @@ namespace Illarion.Server.Persistence.Server
 {
   public class Character
   {
+    public Character(Guid accountId, string name)
+    {
+      AccountId = accountId;
+      Name = name;
+    }
+
     public Guid AccountId { get; private set; }
     public Guid CharacterId { get; private set; }
     public string Name { get; private set; }
