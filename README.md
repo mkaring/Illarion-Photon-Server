@@ -45,8 +45,8 @@ To get started with the database, the structure of the database needs to be set 
 use right now, there is no migration for the database prepared. After building the server the package management
 console of Visual Studio allows to execute the following commands:
 ```powershell
-Add-Migration -Name Initial -Context AccountsContext -Project Illarion.Server.Persistence.Accounts -StartupProject Illarion.Server.Persistence.Design
-Add-Migration -Name Initial -Context ServerContext -Project Illarion.Server.Persistence.Server -StartupProject Illarion.Server.Persistence.Design
+Add-Migration -Name Initial -Context AccountsContext -Project Illarion.Server.Persistence.Accounts.Migrations -StartupProject Illarion.Server.Persistence.Design
+Add-Migration -Name Initial -Context ServerContext -Project Illarion.Server.Persistence.Server.Migrations -StartupProject Illarion.Server.Persistence.Design
 
 Update-Database -Context AccountsContext -Project Illarion.Server.Persistence.Accounts -StartupProject Illarion.Server.Persistence.Design
 Update-Database -Context ServerContext -Project Illarion.Server.Persistence.Server -StartupProject Illarion.Server.Persistence.Design
