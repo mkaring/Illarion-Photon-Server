@@ -15,8 +15,8 @@ namespace Microsoft.Extensions.DependencyInjection
       if (configuration == null) throw new ArgumentNullException(nameof(configuration));
 
       serviceCollection.AddEntityFrameworkNpgsql();
-      serviceCollection.AddDbContextPool<AccountsContext>(b => b.UseNpgsql(configuration.GetConnectionString(nameof(AccountsContext))));
-      serviceCollection.AddDbContextPool<ServerContext>(b => b.UseNpgsql(configuration.GetConnectionString(nameof(ServerContext))));
+      serviceCollection.AddDbContext<AccountsContext>(b => b.UseNpgsql(configuration.GetConnectionString(nameof(AccountsContext))));
+      serviceCollection.AddDbContext<ServerContext>(b => b.UseNpgsql(configuration.GetConnectionString(nameof(ServerContext))));
       return serviceCollection;
     }
   }
