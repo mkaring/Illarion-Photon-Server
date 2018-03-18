@@ -19,6 +19,58 @@ namespace Illarion.Server.Photon.Rpc
     [Required]
     public string CharacterName { get; set; }
 
+    [DataMember(Name = nameof(Race), Code = (byte)CreateCharacterOperationRequestParameterCode.Race)]
+    [Required]
+    public int Race { get; set; }
+
+    [DataMember(Name = nameof(RaceType), Code = (byte)CreateCharacterOperationRequestParameterCode.RaceType)]
+    [Required]
+    public int RaceType { get; set; }
+
+    #region birthday
+    [DataMember(Name = nameof(DayOfBirth), Code = (byte)CreateCharacterOperationRequestParameterCode.DayOfBirth)]
+    [Required]
+    public int DayOfBirth { get; set; }
+
+    [DataMember(Name = nameof(MonthOfBirth), Code = (byte)CreateCharacterOperationRequestParameterCode.MonthOfBirth)]
+    [Required]
+    public int MonthOfBirth { get; set; }
+
+    [DataMember(Name = nameof(YearOfBirth), Code = (byte)CreateCharacterOperationRequestParameterCode.YearOfBirth)]
+    [Required]
+    public int YearOfBirth { get; set; }
+    #endregion
+
+    #region body properties
+    [DataMember(Name = nameof(BodyHeight), Code = (byte)CreateCharacterOperationRequestParameterCode.BodyHeight)]
+    [Required]
+    public double BodyHeight { get; set; }
+
+    [DataMember(Name = nameof(BodyWeight), Code = (byte)CreateCharacterOperationRequestParameterCode.BodyWeight)]
+    [Required]
+    public double BodyWeight { get; set; }
+
+    [DataMember(Name = nameof(BodyShape), Code = (byte)CreateCharacterOperationRequestParameterCode.BodyShape)]
+    [Required]
+    public double BodyShape { get; set; }
+
+    [DataMember(Name = nameof(HairColor1), Code = (byte)CreateCharacterOperationRequestParameterCode.HairColor1)]
+    [Required]
+    public int HairColor1 { get; set; }
+
+    [DataMember(Name = nameof(HairColor2), Code = (byte)CreateCharacterOperationRequestParameterCode.HairColor2)]
+    [Required]
+    public int HairColor2 { get; set; }
+
+    [DataMember(Name = nameof(SkinColor1), Code = (byte)CreateCharacterOperationRequestParameterCode.SkinColor1)]
+    [Required]
+    public int SkinColor1 { get; set; }
+
+    [DataMember(Name = nameof(SkinColor2), Code = (byte)CreateCharacterOperationRequestParameterCode.SkinColor2)]
+    [Required]
+    public int SkinColor2 { get; set; }
+    #endregion
+
     #region Parameters
     [DataMember(Name = nameof(Agility), Code = (byte)CreateCharacterOperationRequestParameterCode.Agility)]
     [Required]

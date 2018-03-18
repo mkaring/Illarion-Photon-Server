@@ -1,9 +1,8 @@
-using Illarion.Server.Persistence;
+using System;
 using Illarion.Server.Persistence.Accounts;
 using Illarion.Server.Persistence.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using System;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

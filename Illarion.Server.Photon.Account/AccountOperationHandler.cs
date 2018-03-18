@@ -56,7 +56,7 @@ namespace Illarion.Server.Photon
 
       foreach (Character character in characters)
       {
-        responseData.CharacterList.Add(GetReponseForCharacter((byte) AccountOperationCode.GetCharacter, character));
+        responseData.CharacterList.Add(GetReponseForCharacter((byte)AccountOperationCode.GetCharacter, character));
       }
 
       return new OperationResponse(operationRequest.OperationCode)
@@ -142,23 +142,38 @@ namespace Illarion.Server.Photon
       var operation = new CreateCharacterOperation(peer.Protocol, operationRequest);
       if (operation.IsValid)
       {
-        ServerContext serverCtx = _services.GetRequiredService<ServerContext>();
-        var anyCharacterWithSameName = serverCtx.Characters.Where(c => c.Name == operation.CharacterName).Any();
-        if (anyCharacterWithSameName)
+        using (ServerContext serverCtx = _services.GetRequiredService<ServerContext>())
         {
-          return new OperationResponse(operationRequest.OperationCode)
+          var anyCharacterWithSameName = serverCtx.Characters.Where(c => c.Name == operation.CharacterName).Any();
+          if (anyCharacterWithSameName)
           {
-            ReturnCode = (byte)CreateCharacterOperationReturnCode.CreationFailed,
-            Parameters = new CreateCharacterReponse()
+            return new OperationResponse(operationRequest.OperationCode)
             {
-              CharacterId = Guid.Empty,
-              InvalidFields = new List<byte>() { (byte)CreateCharacterOperationRequestParameterCode.CharacterName },
-              InvalidParamterMessages = new List<string>() { Resources.CharacterNameAlreadyUsed }
-            }.ToDictionary()
-          };
-        }
-        else
-        {
+              ReturnCode = (byte)CreateCharacterOperationReturnCode.CreationFailed,
+              Parameters = new CreateCharacterReponse()
+              {
+                CharacterId = Guid.Empty,
+                InvalidFields = new List<byte>() { (byte)CreateCharacterOperationRequestParameterCode.CharacterName },
+                InvalidParamterMessages = new List<string>() { Resources.CharacterNameAlreadyUsed }
+              }.ToDictionary()
+            };
+          }
+
+          RaceType raceType = serverCtx.RaceTypes.Where(rt => rt.RaceTypeId == operation.RaceType && rt.RaceId == operation.Race).SingleOrDefault();
+          if (raceType == null)
+          {
+            return new OperationResponse(operationRequest.OperationCode)
+            {
+              ReturnCode = (byte)CreateCharacterOperationReturnCode.CreationFailed,
+              Parameters = new CreateCharacterReponse()
+              {
+                CharacterId = Guid.Empty,
+                InvalidFields = new List<byte>() { (byte)CreateCharacterOperationRequestParameterCode.Race, (byte)CreateCharacterOperationRequestParameterCode.RaceType },
+                InvalidParamterMessages = new List<string>() { Resources.CharacterRaceTypeNotFound }
+              }.ToDictionary()
+            };
+          }
+
           if (operation.Preview)
           {
             return new OperationResponse(operationRequest.OperationCode)
@@ -178,9 +193,16 @@ namespace Illarion.Server.Photon
             using (IDbContextTransaction transaction = serverCtx.Database.BeginTransaction())
             {
               newCharacter = serverCtx.Characters.Add(
-                new Character(peer.Account.AccountId, operation.CharacterName)
+                new Character(peer.Account.AccountId, operation.CharacterName, raceType, operation.DayOfBirth, operation.MonthOfBirth, operation.YearOfBirth)
                 {
-                  Status = CharacterStatus.Default
+                  Status = CharacterStatus.Default,
+                  BodyWeight = operation.BodyWeight,
+                  BodyHeight = operation.BodyHeight,
+                  BodyShape = operation.BodyShape,
+                  HairColor1 = operation.HairColor1,
+                  HairColor2 = operation.HairColor2,
+                  SkinColor1 = operation.SkinColor1,
+                  SkinColor2 = operation.SkinColor2
                 });
               newCharacter.Entity.Attributes.Add(new CharacterAttribute(CharacterAttributeId.Agility) { Value = operation.Agility });
               newCharacter.Entity.Attributes.Add(new CharacterAttribute(CharacterAttributeId.Constitution) { Value = operation.Constitution });

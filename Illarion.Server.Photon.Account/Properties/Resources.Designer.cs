@@ -68,5 +68,14 @@ namespace Illarion.Server.Photon.Properties {
                 return ResourceManager.GetString("CharacterNameAlreadyUsed", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die The selected race does not seem to exist. ähnelt.
+        /// </summary>
+        internal static string CharacterRaceTypeNotFound {
+            get {
+                return ResourceManager.GetString("CharacterRaceTypeNotFound", resourceCulture);
+            }
+        }
     }
 }

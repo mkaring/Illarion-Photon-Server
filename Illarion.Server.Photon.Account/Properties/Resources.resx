@@ -120,4 +120,7 @@
   <data name="CharacterNameAlreadyUsed" xml:space="preserve">
     <value>The character name is already taken.</value>
   </data>
+  <data name="CharacterRaceTypeNotFound" xml:space="preserve">
+    <value>The selected race does not seem to exist.</value>
+  </data>
 </root>
