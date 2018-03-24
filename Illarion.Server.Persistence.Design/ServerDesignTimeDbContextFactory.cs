@@ -8,7 +8,7 @@ namespace Illarion.Server.Persistence.Design
 {
   public class ServerDesignTimeDbContextFactory : IDesignTimeDbContextFactory<ServerContext>
   {
-    public ServerContext CreateDbContext(string[] args)
+    public ServerContext CreateDbContext(params string[] args)
     {
       IConfigurationRoot configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
@@ -17,7 +17,9 @@ namespace Illarion.Server.Persistence.Design
 
       var builder = new DbContextOptionsBuilder<ServerContext>();
 
-      builder.UseNpgsql(configuration.GetConnectionString(nameof(ServerContext)), b => b.MigrationsAssembly("Illarion.Server.Persistence.Server.Migrations"));
+      builder.UseNpgsql(configuration.GetConnectionString(nameof(ServerContext)), b => b.
+        MigrationsAssembly("Illarion.Server.Persistence.Server.Migrations").
+        MigrationsHistoryTable("SchemaMigration", "server"));
 
       return new ServerContext(builder.Options);
     }

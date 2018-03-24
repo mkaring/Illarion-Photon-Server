@@ -51,7 +51,9 @@ namespace Illarion.Server.Persistence.Server
 
         characterEntity.Property(c => c.RaceTypeId).IsRequired();
 
-        characterEntity.Property(c => c.Location).
+        characterEntity.Ignore(c => c.Location);
+        characterEntity.Property("_location").
+          HasColumnName("Location").
           IsRequired().
           HasField("_location").
           UsePropertyAccessMode(PropertyAccessMode.Field).

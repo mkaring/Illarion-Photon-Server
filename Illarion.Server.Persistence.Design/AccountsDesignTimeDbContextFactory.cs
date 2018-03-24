@@ -7,8 +7,8 @@ using System.IO;
 namespace Illarion.Server.Persistence.Design
 {
   public class AccountsDesignTimeDbContextFactory : IDesignTimeDbContextFactory<AccountsContext>
-  {
-    public AccountsContext CreateDbContext(string[] args)
+  {    
+    public AccountsContext CreateDbContext(params string[] args)
     {
       IConfigurationRoot configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
@@ -17,7 +17,9 @@ namespace Illarion.Server.Persistence.Design
 
       var builder = new DbContextOptionsBuilder<AccountsContext>();
 
-      builder.UseNpgsql(configuration.GetConnectionString(nameof(AccountsContext)), b => b.MigrationsAssembly("Illarion.Server.Persistence.Accounts.Migrations"));
+      builder.UseNpgsql(configuration.GetConnectionString(nameof(AccountsContext)), b => b.
+        MigrationsAssembly("Illarion.Server.Persistence.Accounts.Migrations").
+        MigrationsHistoryTable("SchemaMigration", "accounts"));
 
       return new AccountsContext(builder.Options);
     }

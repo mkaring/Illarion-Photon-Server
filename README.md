@@ -47,12 +47,16 @@ console of Visual Studio allows to execute the following commands:
 ```powershell
 Add-Migration -Name Initial -Context AccountsContext -Project Illarion.Server.Persistence.Accounts.Migrations -StartupProject Illarion.Server.Persistence.Design
 Add-Migration -Name Initial -Context ServerContext -Project Illarion.Server.Persistence.Server.Migrations -StartupProject Illarion.Server.Persistence.Design
-
-Update-Database -Context AccountsContext -Project Illarion.Server.Persistence.Accounts -StartupProject Illarion.Server.Persistence.Design
-Update-Database -Context ServerContext -Project Illarion.Server.Persistence.Server -StartupProject Illarion.Server.Persistence.Design
 ```
 Doing so will create the migration for the current state of the database. Do **not** add this migration of the
 repository for now. The layout for the database is not even close to be done.
+
+Updating the database itself should be done using the setup utility for the server that is stored in the
+*Illarion.Server.Setup* application. It is a command line application that currently has one command called *migrate*.
+Executing this command will setup the database properly. Build this utility and execute it using
+```shell
+dotnet Illarion.Server.Setup.dll migrate
+```
 
 After doing so the structure of the database should be present in the target database.
 
