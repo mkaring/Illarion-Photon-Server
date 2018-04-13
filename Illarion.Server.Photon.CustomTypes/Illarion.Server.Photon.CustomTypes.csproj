@@ -9,7 +9,6 @@
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>../IllarionDevelopment.snk</AssemblyOriginatorKeyFile>
 	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-	<GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(PHOTON_SERVER_SDK)' != ''">
@@ -18,14 +17,12 @@
   
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.0" />
-    <PackageReference Include="xunit" Version="2.3.1" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="2.0.0" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.4.0" />
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\Illarion.Server.Persistence.Test.Shared\Illarion.Server.Persistence.Test.Shared.csproj" />
-    <ProjectReference Include="..\Illarion.Server.Photon.Initial\Illarion.Server.Photon.Initial.csproj" />
-    <ProjectReference Include="..\Illarion.Server.Photon.Test.Shared\Illarion.Server.Photon.Test.Shared.csproj" />
+    <ProjectReference Include="..\Illarion.Net.Common\Illarion.Net.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

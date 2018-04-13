@@ -8,6 +8,7 @@
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>../IllarionDevelopment.snk</AssemblyOriginatorKeyFile>
+	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(PHOTON_SERVER_SDK)' != ''">
@@ -20,6 +21,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\Illarion.Net.Common\Illarion.Net.Common.csproj" />
+    <ProjectReference Include="..\Illarion.Server.Abstractions\Illarion.Server.Abstractions.csproj" />
     <ProjectReference Include="..\Illarion.Server.Persistence.Accounts\Illarion.Server.Persistence.Accounts.csproj" />
     <ProjectReference Include="..\Illarion.Server.Persistence.Server\Illarion.Server.Persistence.Server.csproj" />
   </ItemGroup>

@@ -34,18 +34,19 @@ namespace Illarion.Server.Photon
         {
           //builder.AddEventLog(new EventLogSettings() { SourceName = "Application", LogName="Illarion Server", Filter = (m, l) => l >= LogLevel.Error });
           builder.AddConsole();
-#if DEBUG
           builder.AddDebug();
-#endif
         });
       services.AddIllarionPersistanceContext(configuration);
+      services.AddIllarionWorldManager();
 
       services.AddTransient<IInitialOperationHandler>(s => new InitialOperationHandler(s));
       services.AddTransient<IAccountOperationHandler>(s => new AccountOperationHandler(s));
+      services.AddTransient<IPlayerOperationHandler>(s => new PlayerOperationHandler(s));
 
       _services = _serviceProviderFactory.CreateServiceProvider(services);
 
       SetupPhotonLogging(_services);
+      CustomTypeRegistry.RegisterCustomTypes(_services);
     }
 
     protected override void TearDown() => (_services as IDisposable)?.Dispose();

@@ -11,6 +11,7 @@ namespace Illarion.Server.Photon
     public CultureInfo Culture { get; set; }
     public Account Account { get; set; }
     public Character Character { get; set; }
+    public ICharacterController CharacterController { get; set; }
 
     protected PlayerPeerBase(InitRequest initRequest) : base(initRequest)
     {

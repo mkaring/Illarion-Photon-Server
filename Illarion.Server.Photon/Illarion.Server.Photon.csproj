@@ -7,6 +7,7 @@
     <SignAssembly>true</SignAssembly>
     <DelaySign>false</DelaySign>
     <AssemblyOriginatorKeyFile>../IllarionDevelopment.snk</AssemblyOriginatorKeyFile>
+	<AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(PHOTON_SERVER_SDK)' != ''">
@@ -35,8 +36,11 @@
     <ProjectReference Include="..\Illarion.Net.Common\Illarion.Net.Common.csproj" />
     <ProjectReference Include="..\Illarion.Server.Persistence\Illarion.Server.Persistence.csproj" />
     <ProjectReference Include="..\Illarion.Server.Photon.Account\Illarion.Server.Photon.Account.csproj" />
+    <ProjectReference Include="..\Illarion.Server.Photon.CustomTypes\Illarion.Server.Photon.CustomTypes.csproj" />
     <ProjectReference Include="..\Illarion.Server.Photon.Initial\Illarion.Server.Photon.Initial.csproj" />
+    <ProjectReference Include="..\Illarion.Server.Photon.Player\Illarion.Server.Photon.Player.csproj" />
     <ProjectReference Include="..\Illarion.Server.Photon.Shared\Illarion.Server.Photon.Shared.csproj" />
+    <ProjectReference Include="..\Illarion.Server\Illarion.Server.csproj" />
   </ItemGroup>
 
   <ItemGroup>

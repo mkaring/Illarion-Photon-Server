@@ -11,8 +11,8 @@ namespace Illarion.Server.Photon
 
     internal static string GetPasswordHash(string password)
     {
-      byte[] salt = new byte[SaltSize];
-      byte[] iterationBytes = new byte[2];
+      var salt = new byte[SaltSize];
+      var iterationBytes = new byte[2];
       using (var rng = new RNGCryptoServiceProvider())
       {
         rng.GetBytes(salt);
@@ -21,7 +21,7 @@ namespace Illarion.Server.Photon
 
       var iterations = 1000 + (BitConverter.ToInt16(iterationBytes, 0) % 1000);
 
-      byte[] hash = GetPasswordHash(iterations, salt, password);
+      var hash = GetPasswordHash(iterations, salt, password);
 
       return string.Format(
         CultureInfo.InvariantCulture,
@@ -42,13 +42,13 @@ namespace Illarion.Server.Photon
 
     internal static bool VerifyPasswordHash(string password, string hashedPassword)
     {
-      string[] hashParts = hashedPassword.Split(':');
+      var hashParts = hashedPassword.Split(':');
 
       var iterations = int.Parse(hashParts[0], NumberStyles.None, CultureInfo.InvariantCulture);
-      byte[] originalSalt = Convert.FromBase64String(hashParts[1]);
-      byte[] originalHash = Convert.FromBase64String(hashParts[2]);
+      var originalSalt = Convert.FromBase64String(hashParts[1]);
+      var originalHash = Convert.FromBase64String(hashParts[2]);
 
-      byte[] newHash = GetPasswordHash(iterations, originalSalt, password);
+      var newHash = GetPasswordHash(iterations, originalSalt, password);
 
       for (int i = 0, k = Math.Min(originalHash.Length, newHash.Length); i < k ; i++)
       {
