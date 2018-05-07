@@ -50,7 +50,8 @@ namespace Illarion.Server.Persistence.Accounts
       modelBuilder.Entity<Account>().Property(a => a.LastSeen).
         IsRequired().
         UsePropertyAccessMode(PropertyAccessMode.Property).
-        ValueGeneratedOnAddOrUpdate();
+        ValueGeneratedOnAddOrUpdate().
+        HasDefaultValueSql("LOCALTIMESTAMP");
 
       modelBuilder.Entity<Account>().Property(a => a.Registered).
         IsRequired().
