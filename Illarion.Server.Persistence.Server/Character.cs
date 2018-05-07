@@ -8,6 +8,10 @@ namespace Illarion.Server.Persistence.Server
   {
     private float[] _location;
 
+    public Character()
+    {
+    }
+
     public Character(Guid accountId, string name, RaceType raceType, int dayOfBirth, int monthOfBirth, int yearOfBirth)
     {
       _location = new float[3];
