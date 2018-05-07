@@ -20,3 +20,5 @@
 # NuGet v3's project.json files produces more ignoreable files
 *.nuget.props
 *.nuget.targets
+/Illarion.Server.Persistence.Accounts.Migrations/Migrations
+/Illarion.Server.Persistence.Server.Migrations/Migrations
