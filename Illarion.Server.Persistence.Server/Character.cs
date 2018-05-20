@@ -6,7 +6,9 @@ namespace Illarion.Server.Persistence.Server
 {
   public class Character
   {
-    private float[] _location;
+    private float _locationX;
+    private float _locationY;
+    private float _locationZ;
 
     public Character()
     {
@@ -14,7 +16,6 @@ namespace Illarion.Server.Persistence.Server
 
     public Character(Guid accountId, string name, RaceType raceType, int dayOfBirth, int monthOfBirth, int yearOfBirth)
     {
-      _location = new float[3];
       AccountId = accountId;
       Name = name;
       RaceType = RaceType ?? throw new ArgumentNullException(nameof(raceType));
@@ -29,8 +30,13 @@ namespace Illarion.Server.Persistence.Server
     public Guid RaceTypeId { get; set; }
     public CharacterStatus Status { get; set; }
     public Vector3 Location {
-      get => new Vector3(_location[0], _location[1], _location[2]);
-      set => value.CopyTo(_location);
+      get => new Vector3(_locationX, _locationY, _locationZ);
+      set
+      {
+        _locationX = value.X;
+        _locationY = value.Y;
+        _locationZ = value.Z;
+      }
     }
 
     #region birthday

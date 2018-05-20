@@ -52,12 +52,15 @@ namespace Illarion.Server.Persistence.Server
         characterEntity.Property(c => c.RaceTypeId).IsRequired();
 
         characterEntity.Ignore(c => c.Location);
-        characterEntity.Property("_location").
-          HasColumnName("Location").
-          IsRequired().
-          HasField("_location").
-          UsePropertyAccessMode(PropertyAccessMode.Field).
-          HasColumnType("float[3]");
+
+        foreach (var ord in new[] { 'X', 'Y', 'Z'})
+        {
+          characterEntity.Property("_location" + ord).
+            HasColumnName("Location" + ord).
+            IsRequired().
+            HasField("_location" + ord).
+            UsePropertyAccessMode(PropertyAccessMode.Field);
+        }
 
         characterEntity.Property(c => c.DayOfBirth).
           IsRequired()
