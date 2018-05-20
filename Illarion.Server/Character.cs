@@ -24,13 +24,18 @@ namespace Illarion.Server
       World = world ?? throw new ArgumentNullException(nameof(world));
     }
 
-    bool ICharacter.UpdateMovement(Vector3 location, Vector3 velocity, Vector3 facing)
+    bool ICharacterController.UpdateMovement(Vector3 location, Vector3 velocity, Vector3 facing)
     {
       Location = location;
       Velocity = velocity;
       FacingDirection = facing;
 
       return true;
+    }
+
+    void ICharacterController.Chat(IChatChannel channel, string text)
+    {
+      throw new NotImplementedException();
     }
   }
 }
