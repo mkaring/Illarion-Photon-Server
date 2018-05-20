@@ -45,17 +45,20 @@ namespace Illarion.Server.Persistence.Accounts
 
       modelBuilder.Entity<Account>().Property(a => a.Status).
         IsRequired().
-        UsePropertyAccessMode(PropertyAccessMode.Property);
+        UsePropertyAccessMode(PropertyAccessMode.Property).
+        HasDefaultValue("0");
 
       modelBuilder.Entity<Account>().Property(a => a.LastSeen).
         IsRequired().
         UsePropertyAccessMode(PropertyAccessMode.Property).
-        ValueGeneratedOnAddOrUpdate();
+        ValueGeneratedOnAddOrUpdate().
+        HasDefaultValueSql("LOCALTIMESTAMP");
 
       modelBuilder.Entity<Account>().Property(a => a.Registered).
         IsRequired().
         UsePropertyAccessMode(PropertyAccessMode.FieldDuringConstruction).
-        ValueGeneratedOnAdd();
+        ValueGeneratedOnAdd().
+        HasDefaultValueSql("LOCALTIMESTAMP");
     }
   }
 }
