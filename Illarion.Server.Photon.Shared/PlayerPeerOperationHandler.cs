@@ -17,9 +17,7 @@ namespace Illarion.Server.Photon
     public virtual void OnDisconnect(PeerBase peer)
     {
       if (peer == null) OnDisconnect(null);
-
-      var connectedUser = peer as PlayerPeerBase;
-      if (connectedUser == null) throw new ArgumentException("Unexpected type of peer.", nameof(peer));
+      if (!(peer is PlayerPeerBase connectedUser)) throw new ArgumentException("Unexpected type of peer.", nameof(peer));
 
       OnDisconnect(connectedUser);
     }
@@ -27,9 +25,7 @@ namespace Illarion.Server.Photon
     public OperationResponse OnOperationRequest(PeerBase peer, OperationRequest operationRequest, SendParameters sendParameters)
     {
       if (peer == null) return OnOperationRequest(null, operationRequest, sendParameters);
-
-      var connectedUser = peer as PlayerPeerBase;
-      if (connectedUser == null) throw new ArgumentException("Unexpected type of peer.", nameof(peer));
+      if (!(peer is PlayerPeerBase connectedUser)) throw new ArgumentException("Unexpected type of peer.", nameof(peer));
 
       try
       {
