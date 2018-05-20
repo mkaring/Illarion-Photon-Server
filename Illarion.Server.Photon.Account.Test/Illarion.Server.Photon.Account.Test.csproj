@@ -22,7 +22,9 @@
   
   <ItemGroup>
     <ProjectReference Include="..\Illarion.Net.Common\Illarion.Net.Common.csproj" />
+    <ProjectReference Include="..\Illarion.Server.Persistence.Test.Shared\Illarion.Server.Persistence.Test.Shared.csproj" />
     <ProjectReference Include="..\Illarion.Server.Photon.Account\Illarion.Server.Photon.Account.csproj" />
+    <ProjectReference Include="..\Illarion.Server.Photon.Initial\Illarion.Server.Photon.Initial.csproj" />
     <ProjectReference Include="..\Illarion.Server.Photon.Test.Shared\Illarion.Server.Photon.Test.Shared.csproj" />
   </ItemGroup>
 
