@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Illarion.Server
 {
-  internal sealed class Character : ICharacter
+  internal sealed class Character : ICharacter, IMapSubscriber
   {
     internal World World { get; }
 
@@ -18,6 +18,7 @@ namespace Illarion.Server
     public Vector3 FacingDirection { get; set; }
 
     public ICharacterCallback Callback { get; internal set; }
+    IMapSubscription IMapSubscriber.Subscription { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
     internal Character(World world)
     {

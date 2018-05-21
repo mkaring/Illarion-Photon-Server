@@ -37,7 +37,7 @@ namespace Illarion.Server.Photon
           builder.AddDebug();
         });
       services.AddIllarionPersistanceContext(configuration);
-      services.AddIllarionWorldManager();
+      services.AddIllarionGameService();
 
       services.AddTransient<IInitialOperationHandler>(s => new InitialOperationHandler(s));
       services.AddTransient<IAccountOperationHandler>(s => new AccountOperationHandler(s));

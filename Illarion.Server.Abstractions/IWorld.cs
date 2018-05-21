@@ -4,6 +4,9 @@ namespace Illarion.Server
 {
   public interface IWorld
   {
+    /// <summary>This is the map of this specific world.</summary>
+    IMap Map { get; }
+
     /// <summary>Create a new character for this world.</summary>
     /// <param name="callbackFactory">The factory to create a character.</param>
     /// <returns>The newly created instance.</returns>

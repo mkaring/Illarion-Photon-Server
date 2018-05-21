@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Immutable;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Illarion.Server
 {
@@ -13,11 +14,14 @@ namespace Illarion.Server
 
     private IServiceProvider ServiceProvider { get; }
 
+    public IMap Map { get; }
+
     internal World(IServiceProvider provider)
     {
       ServiceProvider = provider ?? throw new ArgumentNullException(nameof(provider));
 
       _players = ImmutableHashSet.Create<Character>();
+      Map = provider.GetRequiredService<IMapFactory>().CreateMap();
     }
 
     ICharacter IWorld.CreateNewCharacter(Func<ICharacter, ICharacterCallback> callbackFactory)
@@ -29,13 +33,7 @@ namespace Illarion.Server
 
     void IWorld.AddCharacter(ICharacter player)
     {
-      if (player == null) throw new ArgumentNullException(nameof(player));
-
-      var checkedPlayer = player as Character;
-      if (checkedPlayer == null || checkedPlayer.World != this)
-      {
-        throw new ArgumentException("The player instance was not created for this world.", nameof(player));
-      }
+      Character checkedPlayer = GetOfThisWorld(player);
 
       if (!ImmutableInterlocked.Update(ref _players, s => s.Add(checkedPlayer)))
       {
@@ -45,15 +43,19 @@ namespace Illarion.Server
 
     void IWorld.RemoveCharacter(ICharacter player)
     {
-      if (player == null) throw new ArgumentNullException(nameof(player));
-
-      var checkedPlayer = player as Character;
-      if (checkedPlayer == null || checkedPlayer.World != this)
-      {
-        throw new ArgumentException("The player instance was not created for this world.", nameof(player));
-      }
+      Character checkedPlayer = GetOfThisWorld(player);
 
       ImmutableInterlocked.Update(ref _players, s => s.Remove(checkedPlayer));
+    }
+
+    private Character GetOfThisWorld(ICharacter character)
+    {
+      if (character == null) throw new ArgumentNullException(nameof(character));
+      if (!(character is Character checkedCharacter) || checkedCharacter.World != this)
+      {
+        throw new ArgumentException("The character instance was not created for this world.", nameof(character));
+      }
+      return checkedCharacter;
     }
   }
 }
